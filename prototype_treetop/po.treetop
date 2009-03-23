@@ -1,0 +1,25 @@
+grammar Po
+  rule translation
+    msgid whitespace string
+  end
+
+  rule string
+    string whitespace string
+  end
+
+  rule quote
+    '"'
+  end
+
+  rule text
+    [^"]*
+  end
+
+  rule whitespace
+    [ \t\n\r]+
+  end
+
+  rule msgid
+    "msgid"
+  end
+end
