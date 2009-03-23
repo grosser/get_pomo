@@ -12,7 +12,7 @@ module Pomo
 
     def add_translations(data)
       (RubyParser.new.parse(data)||[]).each do |expression|
-        puts "--#{expression}--"
+#        puts "--#{expression}--"
         next if [nil,:block].include? expression
         if expression.is_a? Sexp
           parse_method_call(expression)
