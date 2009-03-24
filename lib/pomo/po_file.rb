@@ -1,58 +1,78 @@
-require 'rubygems'
-require 'ruby_parser'
+require 'pomo/translation'
+
 module Pomo
   class PoFile
     attr_reader :singulars
 
     def initialize
       @singulars = []
-      @translations = []
-      @current_translation = {}
     end
 
+    #the text is split into lines and then converted into logical translations
+    #each translation consists of comments(that come before a translation)
+    #and a msgid / msgstr
     def add_translations(data)
-      (RubyParser.new.parse(data)||[]).each do |expression|
-#        puts "--#{expression}--"
-        next if [nil,:block].include? expression
-        if expression.is_a? Sexp
-          parse_method_call(expression)
+      start_new_translation
+      data.split(/$/).each do |line|
+        next if line.empty?
+        if method_call? line
+          parse_method_call line
+        elsif comment? line
+          add_comment line
         else
-          add_string(expression)
+          add_string line
         end
       end
-      archive_current_translation
+      start_new_translation #instance_variable has to be overwritten or errors can occur on next add
     end
 
     private
 
-    def parse_method_call(call)
-      call.each do |exp|
-        next if [nil,:call,:str].include? exp
-        case exp
-        when :msgid
-          archive_current_translation
-          @last_method = :msgid
-        when Symbol
-          @last_method = exp
-        when String
-          add_string exp
-        else
-          parse_arglist exp if exp.to_a[0] == :arglist
-        end
-      end
+    ## fuzzy
+    def comment?(line)
+      line =~ /^\s*#/
     end
 
-    def parse_arglist(list)
-      add_string(list[1][1])
+    def add_comment(line)
+      start_new_translation if translation_complete?
+      @current_translation.comment ||= ""
+      @current_translation.comment += line.strip.sub('#','')
     end
 
+    #msgid "hello"
+    def method_call?(line)
+      line =~ /^\s*[a-z]/
+    end
+
+    #msgid "hello" -> method call msgid + add string "hello"
+    def parse_method_call(line)
+      method, string = line.match(/^\s*([a-z0-9\[\]]+)(.*)/)[1..2]
+      raise "no method found" unless method
+
+      start_new_translation if method == 'msgid' and translation_complete?
+      @last_method = method.to_sym
+      add_string(string)
+    end
+
+    #"hello" -> hello
     def add_string(string)
-      @current_translation[@last_method] += string
+      return if string.strip.empty?
+      raise "not string format: #{string.inspect}" unless string.strip =~ /^['"](.*)['"]$/
+      @current_translation.send("#{@last_method}=",(@current_translation.send(@last_method)||"") + $1)
+    end
+
+    def translation_complete?
+      return false unless @current_translation
+      @current_translation.complete?
     end
   
-    def archive_current_translation
-      @singulars += [@current_translation] unless @current_translation.empty?
-      @current_translation = Hash.new("")
+    def store_translation
+      @singulars += [@current_translation] if @current_translation.complete?
+    end
+
+    def start_new_translation
+      store_translation if translation_complete?
+      @current_translation = Translation.new
     end
   end
 end

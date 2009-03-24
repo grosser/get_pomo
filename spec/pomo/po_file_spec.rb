@@ -8,16 +8,27 @@ describe Pomo::PoFile do
 
   it "parses a simple msgid and msgstr" do
     subject.add_translations(%Q(msgid "xxx"\nmsgstr "yyy"))
-    subject.singulars[0].should == {:msgid=>'xxx',:msgstr=>'yyy'}
+    subject.singulars[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy'}
   end
 
   it "parses a multiline msgid/msgstr" do
     subject.add_translations(%Q(msgid "xxx"\n"aaa"\n\n\nmsgstr ""\n"bbb"))
-    subject.singulars[0].should == {:msgid=>'xxxaaa',:msgstr=>'bbb'}
+    subject.singulars[0].to_hash.should == {:msgid=>'xxxaaa',:msgstr=>'bbb'}
   end
 
-  pending_it "parses comments" do
+  it "parses simple comments" do
     subject.add_translations(%Q(#test\nmsgid "xxx"\nmsgstr "yyy"))
-    subject.singulars[0].should == {:msgid=>'xxx',:msgstr=>'yyy',:comment=>"test"}
+    subject.singulars[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy',:comment=>"test"}
+  end
+
+  it "parses comments above msgstr" do
+    subject.add_translations(%Q(#test\nmsgid "xxx"\n#another\nmsgstr "yyy"))
+    subject.singulars[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy',:comment=>"testanother"}
+  end
+
+  it "adds two different translations" do
+    subject.add_translations(%Q(msgid "xxx"\nmsgstr "yyy"))
+    subject.add_translations(%Q(msgid "aaa"\nmsgstr "yyy"))
+    subject.singulars[1].to_hash.should == {:msgid=>'aaa',:msgstr=>'yyy'}
   end
 end
