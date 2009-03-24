@@ -1,7 +1,7 @@
-This is still experimental, a po/mo file reader, because i hate the unclear/hackish way gettext does it.
-So far the only thing works is reading po files.
+A simple and extendable .mo and .po file parser/generator.  
+--mo file parser and writer are missing atm--
 
-Advanteges over [original po-parser](http://github.com/mutoh/gettext/blob/abf96713327cc4c5d35f0a772f3b75ff4819450c/lib/gettext/poparser.rb):
+Advanteges over [original po-parser](http://github.com/mutoh/gettext/blob/abf96713327cc4c5d35f0a772f3b75ff4819450c/lib/gettext/poparser.rb):  
  - simple architecture + easy to extend/modify
  - emtpy msgstr translations are read
  - comments are included
