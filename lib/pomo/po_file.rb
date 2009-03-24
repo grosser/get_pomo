@@ -27,6 +27,35 @@ module Pomo
       start_new_translation #instance_variable has to be overwritten or errors can occur on next add
     end
 
+    def to_text
+      unique_translations.map {|translation|
+        comment = translation.comment.to_s.split(/\n|\r\n/).map{|line|"##{line}\n"}*''
+        msgid_and_msgstr = if translation.plural?
+          msgids =
+          %Q(msgid "#{translation.msgid[0]}"\n)+
+          %Q(msgid_plural "#{translation.msgid[1]}"\n)
+
+          msgstrs = []
+          translation.msgstr.each_with_index do |msgstr,index|
+            msgstrs << %Q(msgstr[#{index}] "#{msgstr}")
+          end
+
+          msgids + (msgstrs*"\n")
+        else
+          %Q(msgid "#{translation.msgid}"\n)+
+          %Q(msgstr "#{translation.msgstr}")
+        end
+        
+        comment + msgid_and_msgstr
+      } * "\n\n"
+    end
+
+    def unique_translations
+      last_seen_at_index = {}
+      translations.each_with_index {|translation,index|last_seen_at_index[translation.msgid]=index}
+      last_seen_at_index.values.sort.map{|index| translations[index]}
+    end
+
     private
 
     ## fuzzy
@@ -36,8 +65,7 @@ module Pomo
 
     def add_comment(line)
       start_new_translation if translation_complete?
-      @current_translation.comment ||= ""
-      @current_translation.comment += line.strip.sub('#','')
+      @current_translation.add_text(line.strip.sub('#','')+"\n",:to=>:comment)
     end
 
     #msgid "hello"
