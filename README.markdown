@@ -9,13 +9,17 @@ Advanteges over [original po-parser](http://github.com/mutoh/gettext/blob/abf967
 Setup
 =====
     sudo gem install grosser-pomo -s http://gems.github.com/
+
+    #parse po files
     p = Pomo::PoFile.new
     p.add_translations(File.read('xxx.po'))
+
+    #and use the data...
+    msgids = p.translations.reject{|t|t.plural? or t.fuzzy?}.map(&:msgid)
 
 TODO
 ====
  - parsing of fuzzy / created_at
- - pluralisation
  - po writing
  - mo writing/reading (this is the hardest part imo...)
 
