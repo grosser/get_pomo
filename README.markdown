@@ -1,7 +1,10 @@
 This is still experimental, a po/mo file reader, because i hate the unclear/hackish way gettext does it.
 So far the only thing works is reading po files.
 
-An advantage here is that e.g. also emtpy msgstr translations are read.
+Advanteges over [original po-parser](http://github.com/mutoh/gettext/blob/abf96713327cc4c5d35f0a772f3b75ff4819450c/lib/gettext/poparser.rb):
+ - simple architecture + easy to extend/modify
+ - emtpy msgstr translations are read
+ - comments are included
 
 Setup
 =====
@@ -11,7 +14,7 @@ Setup
 
 TODO
 ====
- - parsing of comments
+ - parsing of fuzzy / created_at
  - pluralisation
  - po writing
  - mo writing/reading (this is the hardest part imo...)
