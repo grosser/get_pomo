@@ -2,10 +2,10 @@ require 'pomo/translation'
 
 module Pomo
   class PoFile
-    attr_reader :singulars
+    attr_reader :translations
 
     def initialize
-      @singulars = []
+      @translations = []
     end
 
     #the text is split into lines and then converted into logical translations
@@ -13,7 +13,8 @@ module Pomo
     #and a msgid / msgstr
     def add_translations(data)
       start_new_translation
-      data.split(/$/).each do |line|
+      data.split(/$/).each_with_index do |line,index|
+        @line_number = index + 1
         next if line.empty?
         if method_call? line
           parse_method_call line
@@ -46,7 +47,7 @@ module Pomo
 
     #msgid "hello" -> method call msgid + add string "hello"
     def parse_method_call(line)
-      method, string = line.match(/^\s*([a-z0-9\[\]]+)(.*)/)[1..2]
+      method, string = line.match(/^\s*([a-z0-9_\[\]]+)(.*)/)[1..2]
       raise "no method found" unless method
 
       start_new_translation if method == 'msgid' and translation_complete?
@@ -57,8 +58,8 @@ module Pomo
     #"hello" -> hello
     def add_string(string)
       return if string.strip.empty?
-      raise "not string format: #{string.inspect}" unless string.strip =~ /^['"](.*)['"]$/
-      @current_translation.send("#{@last_method}=",(@current_translation.send(@last_method)||"") + $1)
+      raise "not string format: #{string.inspect} on line #{@line_number}" unless string.strip =~ /^['"](.*)['"]$/
+      @current_translation.add_text($1,:to=>@last_method)
     end
 
     def translation_complete?
@@ -67,7 +68,7 @@ module Pomo
     end
   
     def store_translation
-      @singulars += [@current_translation] if @current_translation.complete?
+      @translations += [@current_translation] if @current_translation.complete?
     end
 
     def start_new_translation
