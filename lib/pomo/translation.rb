@@ -1,5 +1,6 @@
 module Pomo
   class Translation
+    FUZZY_REGEX = /^\s*fuzzy\s*$/
     attr_accessor :msgid, :msgstr, :comment
 
     def add_text(text,options)
@@ -25,7 +26,15 @@ module Pomo
     end
 
     def fuzzy?
-      comment =~ /^\s*fuzzy\s*$/
+      comment =~ FUZZY_REGEX
+    end
+
+    def fuzzy=(value)
+      if value and not fuzzy?
+        add_text "\nfuzzy", :to=>:comment
+      else
+        self.comment = comment.to_s.split(/$/).reject{|line|line=~FUZZY_REGEX}.join("\n")
+      end
     end
 
     def plural?

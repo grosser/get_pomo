@@ -79,4 +79,41 @@ describe Pomo::Translation do
       should_not be_plural
     end
   end
+
+  describe :fuzzy? do
+    it{should_not be_fuzzy}
+
+    it "is fuzzy if a fuzzy comment was added" do
+      subject.add_text("fuzzy",:to=>:comment)
+      should be_fuzzy
+    end
+
+    it "can be made fuzzy by using fuzzy=" do
+      subject.fuzzy = true
+      should be_fuzzy
+    end
+
+    it "can be made unfuzzy by using fuzzy=" do
+      subject.fuzzy = false
+      should_not be_fuzzy
+    end
+
+    it "changes comment when made fuzzy through fuzzy=" do
+      subject.comment = "hello"
+      subject.fuzzy = true
+      subject.comment.should == "hello\nfuzzy"
+    end
+
+    it "changes empty comment when made fuzzy through fuzzy=" do
+      subject.fuzzy = true
+      subject.comment.should == "\nfuzzy"
+    end
+
+    it "preserves comments when making fuzzy/unfuzzy" do
+      subject.comment = "hello"
+      subject.fuzzy = true
+      subject.fuzzy = false
+      subject.comment.should == "hello"
+    end
+  end
 end

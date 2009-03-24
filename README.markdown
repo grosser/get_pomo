@@ -5,6 +5,7 @@ Advanteges over [original po-parser](http://github.com/mutoh/gettext/blob/abf967
  - simple architecture + easy to extend/modify
  - emtpy msgstr translations are read
  - comments are included
+ - fuzzy can be set/unset
 
 Setup
 =====
@@ -19,7 +20,7 @@ Setup
 
 TODO
 ====
- - parsing of fuzzy / created_at
+ - extracting of version/pluralisation_rule/plurals/translator... (from msgid "")
  - po writing
  - mo writing/reading (this is the hardest part imo...)
 
