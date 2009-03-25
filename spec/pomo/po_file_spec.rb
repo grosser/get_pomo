@@ -11,6 +11,11 @@ describe Pomo::PoFile do
     subject.translations[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy'}
   end
 
+  it "parses a simple msgid and msg with additional whitespace" do
+    subject.add_translations(%Q(  msgid    "xxx"   \n   msgstr    "yyy"   ))
+    subject.translations[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy'}
+  end
+
   it "parses a multiline msgid/msgstr" do
     subject.add_translations(%Q(msgid "xxx"\n"aaa"\n\n\nmsgstr ""\n"bbb"))
     subject.translations[0].to_hash.should == {:msgid=>'xxxaaa',:msgstr=>'bbb'}
