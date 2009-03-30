@@ -2,33 +2,12 @@ require 'pomo/translation'
 
 module Pomo
   class PoFile
-    attr_reader :translations
-
-    def initialize
-      @translations = []
+    def self.parse(text)
+      PoFile.new.add_translations_from_text(text)
     end
 
-    #the text is split into lines and then converted into logical translations
-    #each translation consists of comments(that come before a translation)
-    #and a msgid / msgstr
-    def add_translations(data)
-      start_new_translation
-      data.split(/$/).each_with_index do |line,index|
-        @line_number = index + 1
-        next if line.empty?
-        if method_call? line
-          parse_method_call line
-        elsif comment? line
-          add_comment line
-        else
-          add_string line
-        end
-      end
-      start_new_translation #instance_variable has to be overwritten or errors can occur on next add
-    end
-
-    def to_text
-      unique_translations.map {|translation|
+    def self.to_text(translations)
+      unique_translations(translations).map {|translation|
         comment = translation.comment.to_s.split(/\n|\r\n/).map{|line|"##{line}\n"}*''
         msgid_and_msgstr = if translation.plural?
           msgids =
@@ -50,15 +29,41 @@ module Pomo
       } * "\n\n"
     end
 
-    def unique_translations
+    def self.unique_translations(translations)
       last_seen_at_index = {}
       translations.each_with_index {|translation,index|last_seen_at_index[translation.msgid]=index}
       last_seen_at_index.values.sort.map{|index| translations[index]}
     end
 
+    attr_reader :translations
+
+    def initialize
+      @translations = []
+    end
+
+    #the text is split into lines and then converted into logical translations
+    #each translation consists of comments(that come before a translation)
+    #and a msgid / msgstr
+    def add_translations_from_text(text)
+      start_new_translation
+      text.split(/$/).each_with_index do |line,index|
+        @line_number = index + 1
+        next if line.empty?
+        if method_call? line
+          parse_method_call line
+        elsif comment? line
+          add_comment line
+        else
+          add_string line
+        end
+      end
+      start_new_translation #instance_variable has to be overwritten or errors can occur on next add
+      translations
+    end
+
     private
 
-    ## fuzzy
+    #e.g. # fuzzy
     def comment?(line)
       line =~ /^\s*#/
     end

@@ -15,15 +15,13 @@ Setup
     sudo gem install grosser-pomo -s http://gems.github.com/
 
     #parse po files
-    p = Pomo::PoFile.new
-    p.add_translations(File.read('xxx.po'))
-    p.add_translations(File.read('yyy.po'))
+    translations = Pomo::PoFile.parse(File.read('xxx.po')) + Pomo::PoFile.parse(File.read('yyy.po'))
 
     #and use the data...
-    msgids = p.translations.reject{|t|t.plural? or t.fuzzy?}.map(&:msgid)
+    msgids = translations.reject{|t|t.plural? or t.fuzzy?}.map(&:msgid)
 
     #or write a new po file (unique by msgid)...
-    File.open('xxx.po','w){|f|f.print(p.to_text)}
+    File.open('xxx.po','w){|f|f.print(Pomo::PoFile.to_text(translations))}
 
 TODO
 ====

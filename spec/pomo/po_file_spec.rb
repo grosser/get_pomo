@@ -1,54 +1,53 @@
 require File.expand_path("../spec_helper", File.dirname(__FILE__))
 
+include Pomo
 describe Pomo::PoFile do
   it "parses nothing" do
-    subject.add_translations("")
-    subject.translations.should be_empty
+    PoFile.parse("").should be_empty
   end
 
   it "parses a simple msgid and msgstr" do
-    subject.add_translations(%Q(msgid "xxx"\nmsgstr "yyy"))
-    subject.translations[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy'}
+    t = PoFile.parse(%Q(msgid "xxx"\nmsgstr "yyy"))
+    t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy'}
   end
 
   it "parses a simple msgid and msg with additional whitespace" do
-    subject.add_translations(%Q(  msgid    "xxx"   \n   msgstr    "yyy"   ))
-    subject.translations[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy'}
+    t = PoFile.parse(%Q(  msgid    "xxx"   \n   msgstr    "yyy"   ))
+    t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy'}
   end
 
   it "parses a multiline msgid/msgstr" do
-    subject.add_translations(%Q(msgid "xxx"\n"aaa"\n\n\nmsgstr ""\n"bbb"))
-    subject.translations[0].to_hash.should == {:msgid=>'xxxaaa',:msgstr=>'bbb'}
+    t = PoFile.parse(%Q(msgid "xxx"\n"aaa"\n\n\nmsgstr ""\n"bbb"))
+    t[0].to_hash.should == {:msgid=>'xxxaaa',:msgstr=>'bbb'}
   end
 
   it "parses simple comments" do
-    subject.add_translations(%Q(#test\nmsgid "xxx"\nmsgstr "yyy"))
-    subject.translations[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy',:comment=>"test\n"}
+    t = PoFile.parse(%Q(#test\nmsgid "xxx"\nmsgstr "yyy"))
+    t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy',:comment=>"test\n"}
   end
 
   it "parses comments above msgstr" do
-    subject.add_translations(%Q(#test\nmsgid "xxx"\n#another\nmsgstr "yyy"))
-    subject.translations[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy',:comment=>"test\nanother\n"}
+    t = PoFile.parse(%Q(#test\nmsgid "xxx"\n#another\nmsgstr "yyy"))
+    t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy',:comment=>"test\nanother\n"}
   end
 
   it "adds two different translations" do
-    subject.add_translations(%Q(msgid "xxx"\nmsgstr "yyy"))
-    subject.add_translations(%Q(msgid "aaa"\nmsgstr "yyy"))
-    subject.translations[1].to_hash.should == {:msgid=>'aaa',:msgstr=>'yyy'}
+    t = PoFile.parse(%Q(msgid "xxx"\nmsgstr "yyy")) + PoFile.parse(%Q(msgid "aaa"\nmsgstr "yyy"))
+    t[1].to_hash.should == {:msgid=>'aaa',:msgstr=>'yyy'}
   end
 
   it "adds plural translations" do
-    subject.add_translations(%Q(msgid "singular"\nmsgid_plural "plural"\nmsgstr[0] "one"\nmsgstr[1] "many"))
-    subject.translations[0].to_hash.should == {:msgid=>['singular','plural'],:msgstr=>['one','many']}
+    t = PoFile.parse(%Q(msgid "singular"\nmsgid_plural "plural"\nmsgstr[0] "one"\nmsgstr[1] "many"))
+    t[0].to_hash.should == {:msgid=>['singular','plural'],:msgstr=>['one','many']}
   end
 
   it "does not fail on empty string" do
-    subject.add_translations(%Q(\n\n\n\n\n))
+    PoFile.parse(%Q(\n\n\n\n\n))
   end
 
   it "shows line number for invalid strings" do
     begin
-      subject.add_translations(%Q(\n\n\n\n\nmsgstr "))
+      PoFile.parse(%Q(\n\n\n\n\nmsgstr "))
       flunk
     rescue Exception => e
       e.to_s.should =~ /line 5/
@@ -57,13 +56,12 @@ describe Pomo::PoFile do
 
   describe :to_text do
     it "is empty when not translations where added" do
-      subject.to_text.should == ""
+      PoFile.to_text([]).should == ""
     end
     
     it "preserves simple syntax" do
       text = %Q(msgid "x"\nmsgstr "y")
-      subject.add_translations(text)
-      subject.to_text.should == text
+      PoFile.to_text(PoFile.parse(text)).should == text
     end
 
     it "adds comments" do
@@ -72,20 +70,17 @@ describe Pomo::PoFile do
       t.msgstr = 'b'
       t.add_text("c\n",:to=>:comment)
       t.add_text("d\n",:to=>:comment)
-      subject.translations << t
-      subject.to_text.should == %Q(#c\n#d\nmsgid "a"\nmsgstr "b")
+      PoFile.to_text([t]).should == %Q(#c\n#d\nmsgid "a"\nmsgstr "b")
     end
 
     it "uses plural notation" do
       text = %Q(#awesome\nmsgid "one"\nmsgid_plural "many"\nmsgstr[0] "1"\nmsgstr[1] "n")
-      subject.add_translations(text)
-      subject.to_text.should == text
+      PoFile.to_text(PoFile.parse(text)).should == text
     end
 
     it "only uses the latest of identicals msgids" do
       text = %Q(msgid "one"\nmsgstr "1"\nmsgid "one"\nmsgstr "001")
-      subject.add_translations(text)
-      subject.to_text.should == %Q(msgid "one"\nmsgstr "001")
+      PoFile.to_text(PoFile.parse(text)).should ==  %Q(msgid "one"\nmsgstr "001")
     end
   end
 end
