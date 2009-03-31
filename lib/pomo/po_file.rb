@@ -11,12 +11,6 @@ module Pomo
       p.to_text
     end
 
-    def self.unique_translations(translations)
-      last_seen_at_index = {}
-      translations.each_with_index {|translation,index|last_seen_at_index[translation.msgid]=index}
-      last_seen_at_index.values.sort.map{|index| translations[index]}
-    end
-
     attr_reader :translations
 
     def initialize(options = {})
@@ -44,7 +38,7 @@ module Pomo
     end
 
     def to_text
-      self.class.unique_translations(translations).map {|translation|
+      Pomo.unique_translations(translations).map {|translation|
         comment = translation.comment.to_s.split(/\n|\r\n/).map{|line|"##{line}\n"}*''
         msgid_and_msgstr = if translation.plural?
           msgids =

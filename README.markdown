@@ -1,7 +1,6 @@
 A simple and extendable .mo and .po file parser/generator.  
---mo file parser and writer are missing atm--
 
-Advanteges over [original po-parser](http://github.com/mutoh/gettext/blob/abf96713327cc4c5d35f0a772f3b75ff4819450c/lib/gettext/poparser.rb):
+Advanteges over original [mo](http://github.com/mutoh/gettext/blob/abf96713327cc4c5d35f0a772f3b75ff4819450c/lib/gettext/mofile.rb) / [po](http://github.com/mutoh/gettext/blob/abf96713327cc4c5d35f0a772f3b75ff4819450c/lib/gettext/poparser.rb)-parser:
 
  - simple architecture + easy to extend/modify
  - emtpy msgstr translations are read
@@ -9,6 +8,8 @@ Advanteges over [original po-parser](http://github.com/mutoh/gettext/blob/abf967
  - fuzzy can be set/unset
  - multiple translations can be combined in a new po file(with comments and fuzzy and ...)
  - po files can be written from any kind of input
+ - easy mo-file handling/merging
+ - po/mo file handling is identical, if you know one, you know both
 
 Setup
 =====
@@ -24,6 +25,7 @@ Setup
     #or write a new po file (unique by msgid)...
     File.open('xxx.po','w){|f|f.print(Pomo::PoFile.to_text(translations))}
 
+
 ###Instance interface
     p = PoMo::PoFile.new
     p.add_translations_from_text(File.read('...'))
@@ -31,10 +33,12 @@ Setup
     p.translations
     p.to_text
 
+`Pomo::MoFile` behaves identical.
+
 TODO
 ====
  - extracting of version/pluralisation_rule/plurals/translator... (from msgid "")
- - mo writing/reading (this is the hardest part imo...)
+ - the vendor/mofile is really complex, maybe it can be refactored (also some parts are not needed)
 
 Author
 ======
