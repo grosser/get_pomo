@@ -31,9 +31,33 @@ describe Pomo::PoFile do
     t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy',:comment=>"test\nanother\n"}
   end
 
-  it "adds two different translations" do
-    t = PoFile.parse(%Q(msgid "xxx"\nmsgstr "yyy")) + PoFile.parse(%Q(msgid "aaa"\nmsgstr "yyy"))
-    t[1].to_hash.should == {:msgid=>'aaa',:msgstr=>'yyy'}
+  describe "instance interface" do
+    it "adds two different translations" do
+      p = PoFile.new
+      p.add_translations_from_text(%Q(msgid "xxx"\nmsgstr "yyy"))
+      p.add_translations_from_text(%Q(msgid "aaa"\nmsgstr "yyy"))
+      p.translations[1].to_hash.should == {:msgid=>'aaa',:msgstr=>'yyy'}
+    end
+
+    it "can be initialized with translations" do
+      p = PoFile.new(:translations=>['xxx'])
+      p.translations[0].should == 'xxx'
+    end
+
+    it "can be converted to text" do
+      text = %Q(msgid "xxx"\nmsgstr "aaa")
+      p = PoFile.new
+      p.add_translations_from_text(text)
+      p.to_text.should == text
+    end
+
+    it "keeps uniqueness when converting to_text" do
+      text = %Q(msgid "xxx"\nmsgstr "aaa")
+      p = PoFile.new
+      p.add_translations_from_text(%Q(msgid "xxx"\nmsgstr "yyy"))
+      p.add_translations_from_text(text)
+      p.to_text.should == text
+    end
   end
 
   it "adds plural translations" do

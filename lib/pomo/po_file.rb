@@ -7,26 +7,8 @@ module Pomo
     end
 
     def self.to_text(translations)
-      unique_translations(translations).map {|translation|
-        comment = translation.comment.to_s.split(/\n|\r\n/).map{|line|"##{line}\n"}*''
-        msgid_and_msgstr = if translation.plural?
-          msgids =
-          %Q(msgid "#{translation.msgid[0]}"\n)+
-          %Q(msgid_plural "#{translation.msgid[1]}"\n)
-
-          msgstrs = []
-          translation.msgstr.each_with_index do |msgstr,index|
-            msgstrs << %Q(msgstr[#{index}] "#{msgstr}")
-          end
-
-          msgids + (msgstrs*"\n")
-        else
-          %Q(msgid "#{translation.msgid}"\n)+
-          %Q(msgstr "#{translation.msgstr}")
-        end
-        
-        comment + msgid_and_msgstr
-      } * "\n\n"
+      p = PoFile.new(:translations=>translations)
+      p.to_text
     end
 
     def self.unique_translations(translations)
@@ -37,8 +19,8 @@ module Pomo
 
     attr_reader :translations
 
-    def initialize
-      @translations = []
+    def initialize(options = {})
+      @translations = options[:translations] || []
     end
 
     #the text is split into lines and then converted into logical translations
@@ -59,6 +41,29 @@ module Pomo
       end
       start_new_translation #instance_variable has to be overwritten or errors can occur on next add
       translations
+    end
+
+    def to_text
+      self.class.unique_translations(translations).map {|translation|
+        comment = translation.comment.to_s.split(/\n|\r\n/).map{|line|"##{line}\n"}*''
+        msgid_and_msgstr = if translation.plural?
+          msgids =
+          %Q(msgid "#{translation.msgid[0]}"\n)+
+          %Q(msgid_plural "#{translation.msgid[1]}"\n)
+
+          msgstrs = []
+          translation.msgstr.each_with_index do |msgstr,index|
+            msgstrs << %Q(msgstr[#{index}] "#{msgstr}")
+          end
+
+          msgids + (msgstrs*"\n")
+        else
+          %Q(msgid "#{translation.msgid}"\n)+
+          %Q(msgstr "#{translation.msgstr}")
+        end
+
+        comment + msgid_and_msgstr
+      } * "\n\n"
     end
 
     private

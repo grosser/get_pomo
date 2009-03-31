@@ -14,6 +14,7 @@ Setup
 =====
     sudo gem install grosser-pomo -s http://gems.github.com/
 
+###Static interface
     #parse po files
     translations = Pomo::PoFile.parse(File.read('xxx.po')) + Pomo::PoFile.parse(File.read('yyy.po'))
 
@@ -22,6 +23,13 @@ Setup
 
     #or write a new po file (unique by msgid)...
     File.open('xxx.po','w){|f|f.print(Pomo::PoFile.to_text(translations))}
+
+###Instance interface
+    p = PoMo::PoFile.new
+    p.add_translations_from_text(File.read('...'))
+    ...
+    p.translations
+    p.to_text
 
 TODO
 ====
