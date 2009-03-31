@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{pomo}
-  s.version = "0.3.1"
+  s.version = "0.4.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Michael Grosser"]
-  s.date = %q{2009-03-24}
+  s.date = %q{2009-03-31}
   s.email = %q{grosser.michael@gmail.com}
   s.files = ["VERSION.yml", "README.markdown", "lib/pomo", "lib/pomo/po_file.rb", "lib/pomo/translation.rb", "lib/pomo.rb", "spec/pomo", "spec/pomo/po_file_spec.rb", "spec/pomo/translation_spec.rb", "spec/spec_helper.rb"]
   s.has_rdoc = true
