@@ -2,19 +2,47 @@
 
 Gem::Specification.new do |s|
   s.name = %q{pomo}
-  s.version = "0.5.0"
+  s.version = "0.5.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Michael Grosser"]
-  s.date = %q{2009-03-31}
+  s.date = %q{2009-05-01}
   s.email = %q{grosser.michael@gmail.com}
-  s.files = ["README.markdown", "VERSION.yml", "lib/pomo", "lib/pomo.rb", "lib/pomo/mo_file.rb", "lib/pomo/po_file.rb", "lib/pomo/translation.rb", "spec/files", "spec/files/complex.mo", "spec/files/empty.mo", "spec/files/plural.mo", "spec/files/singular.mo", "spec/files/singular_2.mo", "spec/pomo", "spec/pomo/mo_file_spec.rb", "spec/pomo/po_file_spec.rb", "spec/pomo/translation_spec.rb", "spec/spec_helper.rb", "vendor/README.rdoc", "vendor/iconv.rb", "vendor/mofile.rb"]
+  s.extra_rdoc_files = [
+    "README.markdown"
+  ]
+  s.files = [
+    "README.markdown",
+    "VERSION.yml",
+    "lib/pomo.rb",
+    "lib/pomo/mo_file.rb",
+    "lib/pomo/po_file.rb",
+    "lib/pomo/translation.rb",
+    "spec/files/complex.mo",
+    "spec/files/empty.mo",
+    "spec/files/plural.mo",
+    "spec/files/singular.mo",
+    "spec/files/singular_2.mo",
+    "spec/pomo/mo_file_spec.rb",
+    "spec/pomo/po_file_spec.rb",
+    "spec/pomo/translation_spec.rb",
+    "spec/spec_helper.rb",
+    "vendor/README.rdoc",
+    "vendor/iconv.rb",
+    "vendor/mofile.rb"
+  ]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/grosser/pomo}
-  s.rdoc_options = ["--inline-source", "--charset=UTF-8"]
+  s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.1}
   s.summary = %q{Ruby/Gettext: A .po and .mo file parser/generator}
+  s.test_files = [
+    "spec/pomo/po_file_spec.rb",
+    "spec/pomo/translation_spec.rb",
+    "spec/pomo/mo_file_spec.rb",
+    "spec/spec_helper.rb"
+  ]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
