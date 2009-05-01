@@ -2,33 +2,40 @@ require File.expand_path("../spec_helper", File.dirname(__FILE__))
 
 include Pomo
 describe Pomo::PoFile do
-  it "parses nothing" do
-    PoFile.parse("").should be_empty
-  end
+  describe :parse do
+    it "parses nothing" do
+      PoFile.parse("").should be_empty
+    end
 
-  it "parses a simple msgid and msgstr" do
-    t = PoFile.parse(%Q(msgid "xxx"\nmsgstr "yyy"))
-    t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy'}
-  end
+    it "parses a simple msgid and msgstr" do
+      t = PoFile.parse(%Q(msgid "xxx"\nmsgstr "yyy"))
+      t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy'}
+    end
 
-  it "parses a simple msgid and msg with additional whitespace" do
-    t = PoFile.parse(%Q(  msgid    "xxx"   \n   msgstr    "yyy"   ))
-    t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy'}
-  end
+    it "parses a simple msgid and msg with additional whitespace" do
+      t = PoFile.parse(%Q(  msgid    "xxx"   \n   msgstr    "yyy"   ))
+      t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy'}
+    end
 
-  it "parses a multiline msgid/msgstr" do
-    t = PoFile.parse(%Q(msgid "xxx"\n"aaa"\n\n\nmsgstr ""\n"bbb"))
-    t[0].to_hash.should == {:msgid=>'xxxaaa',:msgstr=>'bbb'}
-  end
+    it "parses an empty msgid with text (gettext meta data)" do
+      t = PoFile.parse(%Q(msgid ""\nmsgstr "PLURAL FORMS"))
+      t[0].to_hash.should == {:msgid=>'',:msgstr=>'PLURAL FORMS'}
+    end
 
-  it "parses simple comments" do
-    t = PoFile.parse(%Q(#test\nmsgid "xxx"\nmsgstr "yyy"))
-    t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy',:comment=>"test\n"}
-  end
+    it "parses a multiline msgid/msgstr" do
+      t = PoFile.parse(%Q(msgid "xxx"\n"aaa"\n\n\nmsgstr ""\n"bbb"))
+      t[0].to_hash.should == {:msgid=>'xxxaaa',:msgstr=>'bbb'}
+    end
 
-  it "parses comments above msgstr" do
-    t = PoFile.parse(%Q(#test\nmsgid "xxx"\n#another\nmsgstr "yyy"))
-    t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy',:comment=>"test\nanother\n"}
+    it "parses simple comments" do
+      t = PoFile.parse(%Q(#test\nmsgid "xxx"\nmsgstr "yyy"))
+      t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy',:comment=>"test\n"}
+    end
+
+    it "parses comments above msgstr" do
+      t = PoFile.parse(%Q(#test\nmsgid "xxx"\n#another\nmsgstr "yyy"))
+      t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy',:comment=>"test\nanother\n"}
+    end
   end
 
   describe "instance interface" do

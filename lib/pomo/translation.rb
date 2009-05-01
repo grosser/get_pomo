@@ -22,7 +22,7 @@ module Pomo
     end
 
     def complete?
-      not msgid.to_s.strip.empty? and not msgstr.nil?
+      not msgid.nil? and not msgstr.nil?
     end
 
     def fuzzy?
