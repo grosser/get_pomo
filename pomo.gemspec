@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{pomo}
-  s.version = "0.5.1"
+  s.version = "0.5.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Michael Grosser"]
@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
     ".gitignore",
      "README.markdown",
      "Rakefile",
-     "VERSION.yml",
+     "VERSION",
      "lib/pomo.rb",
      "lib/pomo/mo_file.rb",
      "lib/pomo/po_file.rb",
@@ -34,6 +34,7 @@ Gem::Specification.new do |s|
      "spec/pomo/mo_file_spec.rb",
      "spec/pomo/po_file_spec.rb",
      "spec/pomo/translation_spec.rb",
+     "spec/pomo_spec.rb",
      "spec/spec_helper.rb",
      "vendor/README.rdoc",
      "vendor/iconv.rb",
@@ -46,6 +47,7 @@ Gem::Specification.new do |s|
   s.summary = %q{Ruby/Gettext: A .po and .mo file parser/generator}
   s.test_files = [
     "spec/spec_helper.rb",
+     "spec/pomo_spec.rb",
      "spec/pomo/translation_spec.rb",
      "spec/pomo/mo_file_spec.rb",
      "spec/pomo/po_file_spec.rb"
