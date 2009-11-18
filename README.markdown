@@ -13,7 +13,7 @@ Advanteges over original [mo](http://github.com/mutoh/gettext/blob/abf96713327cc
 
 Setup
 =====
-    sudo gem install grosser-pomo -s http://gems.github.com/
+    sudo gem install pomo -s http://gemcutter.org
 
 ###Static interface
     #parse po files
