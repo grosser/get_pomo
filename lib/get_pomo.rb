@@ -1,5 +1,5 @@
-require 'pomo/po_file'
-module Pomo
+require 'get_pomo/po_file'
+module GetPomo
   VERSION = File.read( File.join(File.dirname(__FILE__),'..','VERSION') ).strip
   
   extend self

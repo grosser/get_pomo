@@ -3,7 +3,7 @@ require 'spec/rake/spectask'
 Spec::Rake::SpecTask.new {|t| t.spec_opts = ['--color']}
 
 begin
-  project_name = 'pomo'
+  project_name = 'get_pomo'
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = project_name

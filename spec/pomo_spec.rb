@@ -1,7 +1,7 @@
 require 'spec/spec_helper'
 
-describe Pomo do
+describe GetPomo do
   it "has a VERSION" do
-    Pomo::VERSION.should =~ /^\d+\.\d+\.\d+$/
+    GetPomo::VERSION.should =~ /^\d+\.\d+\.\d+$/
   end
 end

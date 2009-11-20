@@ -1,8 +1,8 @@
 require File.expand_path("../spec_helper", File.dirname(__FILE__))
-require 'pomo/mo_file'
+require 'get_pomo/mo_file'
 
-include Pomo
-describe Pomo::MoFile do
+include GetPomo
+describe GetPomo::MoFile do
   it "parses empty mo file" do
     MoFile.parse(File.read('spec/files/empty.mo')).should == []
   end

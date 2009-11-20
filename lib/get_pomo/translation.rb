@@ -1,4 +1,4 @@
-module Pomo
+module GetPomo
   class Translation
     FUZZY_REGEX = /^\s*fuzzy\s*$/
     attr_accessor :msgid, :msgstr, :comment

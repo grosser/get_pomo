@@ -21,7 +21,7 @@ require 'stringio'
 #Modifications:
 #  use Iconv or FastGettext::Icvon
 
-module Pomo
+module GetPomo
   module GetText
     class MOFile < Hash
       class InvalidFormat < RuntimeError; end;

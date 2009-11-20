@@ -1,6 +1,6 @@
-require 'pomo/translation'
+require 'get_pomo/translation'
 
-module Pomo
+module GetPomo
   class PoFile
     def self.parse(text)
       PoFile.new.add_translations_from_text(text)
@@ -38,7 +38,7 @@ module Pomo
     end
 
     def to_text
-      Pomo.unique_translations(translations).map {|translation|
+      GetPomo.unique_translations(translations).map {|translation|
         comment = translation.comment.to_s.split(/\n|\r\n/).map{|line|"##{line}\n"}*''
         msgid_and_msgstr = if translation.plural?
           msgids =

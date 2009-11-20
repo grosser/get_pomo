@@ -1,8 +1,8 @@
 require File.expand_path("../spec_helper", File.dirname(__FILE__))
 
-require 'pomo/translation'
+require 'get_pomo/translation'
 
-describe Pomo::Translation do
+describe GetPomo::Translation do
   describe :complete? do
     it{should_not be_complete}
 

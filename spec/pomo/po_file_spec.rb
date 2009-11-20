@@ -1,7 +1,7 @@
 require File.expand_path("../spec_helper", File.dirname(__FILE__))
 
-include Pomo
-describe Pomo::PoFile do
+include GetPomo
+describe GetPomo::PoFile do
   describe :parse do
     it "parses nothing" do
       PoFile.parse("").should be_empty
@@ -96,7 +96,7 @@ describe Pomo::PoFile do
     end
 
     it "adds comments" do
-      t = Pomo::Translation.new
+      t = GetPomo::Translation.new
       t.msgid = 'a'
       t.msgstr = 'b'
       t.add_text("c\n",:to=>:comment)

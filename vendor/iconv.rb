@@ -33,7 +33,7 @@ rescue LoadError
   # (1) Ruby/GLib is a module which is provided from Ruby-GNOME2 Project. 
   # You can get binaries for Win32(One-Click Ruby Installer).
   # <URL: http://ruby-gnome2.sourceforge.jp/>
-  module Pomo
+  module GetPomo
     class Iconv2
       module Failure; end
       class InvalidEncoding < ArgumentError;  include Failure; end

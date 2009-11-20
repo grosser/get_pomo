@@ -1,6 +1,6 @@
 # ---- requirements
 $LOAD_PATH.unshift File.expand_path("../lib", File.dirname(__FILE__))
-require 'pomo'
+require 'get_pomo'
 
 # ---- Helpers
 def pending_it(text,&block)

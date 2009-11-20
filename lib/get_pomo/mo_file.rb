@@ -1,7 +1,7 @@
-require 'pomo/translation'
+require 'get_pomo/translation'
 require File.join(File.dirname(__FILE__),'..','..','vendor','mofile')
 
-module Pomo
+module GetPomo
   class MoFile
     PLURAL_SEPERATOR = "\000"
 
@@ -22,7 +22,7 @@ module Pomo
 
     def add_translations_from_text(text)
       text = StringIO.new(text)
-      @translations += Pomo::GetText::MOFile.open(text, "UTF-8").map do |msgid,msgstr|
+      @translations += GetPomo::GetText::MOFile.open(text, "UTF-8").map do |msgid,msgstr|
         translation = Translation.new
         if plural? msgid or plural? msgstr
           translation.msgid = split_plural(msgid)
@@ -36,8 +36,8 @@ module Pomo
     end
 
     def to_text
-      m = Pomo::GetText::MOFile.new
-      Pomo.unique_translations(translations).each {|t| m[plural_to_string(t.msgid)] = plural_to_string(t.msgstr)}
+      m = GetPomo::GetText::MOFile.new
+      GetPomo.unique_translations(translations).each {|t| m[plural_to_string(t.msgid)] = plural_to_string(t.msgstr)}
 
       io = StringIO.new
       m.save_to_stream io
