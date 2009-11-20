@@ -4,12 +4,12 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{pomo}
-  s.version = "0.5.2"
+  s.name = %q{get_pomo}
+  s.version = "0.6.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Michael Grosser"]
-  s.date = %q{2009-11-18}
+  s.date = %q{2009-11-20}
   s.email = %q{grosser.michael@gmail.com}
   s.extra_rdoc_files = [
     "README.markdown"
@@ -19,10 +19,10 @@ Gem::Specification.new do |s|
      "README.markdown",
      "Rakefile",
      "VERSION",
-     "lib/pomo.rb",
-     "lib/pomo/mo_file.rb",
-     "lib/pomo/po_file.rb",
-     "lib/pomo/translation.rb",
+     "lib/get_pomo.rb",
+     "lib/get_pomo/mo_file.rb",
+     "lib/get_pomo/po_file.rb",
+     "lib/get_pomo/translation.rb",
      "pomo.gemspec",
      "prototype_treetop/po.treetop",
      "prototype_treetop/test.rb",
@@ -40,7 +40,7 @@ Gem::Specification.new do |s|
      "vendor/iconv.rb",
      "vendor/mofile.rb"
   ]
-  s.homepage = %q{http://github.com/grosser/pomo}
+  s.homepage = %q{http://github.com/grosser/get_pomo}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.5}
