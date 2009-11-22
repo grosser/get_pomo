@@ -13,7 +13,7 @@ Advanteges over original [mo](http://github.com/mutoh/gettext/blob/abf96713327cc
 
 Setup
 =====
-    sudo gem install get_pomo -s http://gemcutter.org
+    sudo gem install get_pomo
 
 ###Static interface
     #parse po files
