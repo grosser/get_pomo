@@ -26,7 +26,7 @@ module GetPomo
     end
 
     def fuzzy?
-      comment =~ FUZZY_REGEX
+      !!(comment =~ FUZZY_REGEX)
     end
 
     def fuzzy=(value)
