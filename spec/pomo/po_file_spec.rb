@@ -1,4 +1,4 @@
-require File.expand_path("../spec_helper", File.dirname(__FILE__))
+require "spec_helper"
 
 include GetPomo
 describe GetPomo::PoFile do
@@ -89,7 +89,7 @@ describe GetPomo::PoFile do
     it "is empty when not translations where added" do
       PoFile.to_text([]).should == ""
     end
-    
+
     it "preserves simple syntax" do
       text = %Q(msgid "x"\nmsgstr "y")
       PoFile.to_text(PoFile.parse(text)).should == text

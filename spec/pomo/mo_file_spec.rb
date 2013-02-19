@@ -1,4 +1,5 @@
-require File.expand_path("../spec_helper", File.dirname(__FILE__))
+# encoding: utf-8
+require 'spec_helper'
 require 'get_pomo/mo_file'
 
 include GetPomo
