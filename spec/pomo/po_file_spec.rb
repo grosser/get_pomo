@@ -1,4 +1,5 @@
 require "spec_helper"
+require "get_pomo/po_file"
 
 describe GetPomo::PoFile do
   describe :parse do
@@ -28,12 +29,12 @@ describe GetPomo::PoFile do
 
     it "parses simple comments" do
       t = GetPomo::PoFile.parse(%Q(#test\nmsgid "xxx"\nmsgstr "yyy"))
-      t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy',:comment=>"test\n"}
+      t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy',:comment=>"#test\n"}
     end
 
     it "parses comments above msgstr" do
       t = GetPomo::PoFile.parse(%Q(#test\nmsgid "xxx"\n#another\nmsgstr "yyy"))
-      t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy',:comment=>"test\nanother\n"}
+      t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy',:comment=>"#test\n#another\n"}
     end
   end
 
@@ -98,8 +99,8 @@ describe GetPomo::PoFile do
       t = GetPomo::Translation.new
       t.msgid = 'a'
       t.msgstr = 'b'
-      t.add_text("c\n",:to=>:comment)
-      t.add_text("d\n",:to=>:comment)
+      t.add_text("#c\n",:to=>:comment)
+      t.add_text("#d\n",:to=>:comment)
       GetPomo::PoFile.to_text([t]).should == %Q(#c\n#d\nmsgid "a"\nmsgstr "b")
     end
 

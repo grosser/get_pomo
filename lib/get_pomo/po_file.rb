@@ -39,7 +39,7 @@ module GetPomo
 
     def to_text
       GetPomo.unique_translations(translations).map {|translation|
-        comment = translation.comment.to_s.split(/\n|\r\n/).map{|line|"##{line}\n"}*''
+        comment = translation.comment.to_s.split(/\n|\r\n/).map{|line|"#{line}\n"}*''
         msgid_and_msgstr = if translation.plural?
           msgids =
           %Q(msgid "#{translation.msgid[0]}"\n)+

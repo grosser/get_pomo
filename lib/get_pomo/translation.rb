@@ -31,7 +31,7 @@ module GetPomo
 
     def fuzzy=(value)
       if value and not fuzzy?
-        add_text "\nfuzzy", :to=>:comment
+        add_text "\n#, fuzzy", :to=>:comment
       else
         self.comment = comment.to_s.split(/$/).reject{|line|line=~FUZZY_REGEX}.join("\n")
       end
