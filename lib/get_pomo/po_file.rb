@@ -69,7 +69,7 @@ module GetPomo
 
     def add_comment(line)
       start_new_translation if translation_complete?
-      @current_translation.add_text(line.strip.sub('#','')+"\n",:to=>:comment)
+      @current_translation.add_text(line.strip+"\n",:to=>:comment)
     end
 
     #msgid "hello"
