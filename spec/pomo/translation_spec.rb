@@ -79,6 +79,40 @@ describe GetPomo::Translation do
     end
   end
 
+  describe :singular? do
+    it{should be_singular}
+
+    it "is not singular if msgid is plural" do
+      subject.add_text("x",:to=>:msgid_plural)
+      should_not be_singular
+    end
+
+    it "is not singular if msgstr is plural" do
+      subject.add_text("x",:to=>"msgstr[0]")
+      should_not be_singular
+    end
+
+    it "is singular if simple strings where added" do
+      subject.msgid = "a"
+      subject.msgstr = "a"
+      should be_singular
+    end
+  end
+
+  describe :header? do
+    it{should_not be_header}
+
+    it "is header if msgid is empty" do
+      subject.msgid = ""
+      should be_header
+    end
+
+    it "is not header if there is something on msgid" do
+      subject.msgid = "a"
+      should_not be_header
+    end
+  end
+
   describe :fuzzy? do
     it{should_not be_fuzzy}
 

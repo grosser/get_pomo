@@ -40,5 +40,13 @@ module GetPomo
     def plural?
       msgid.is_a? Array or msgstr.is_a? Array
     end
+
+    def singular?
+      !plural?
+    end
+
+    def header?
+      msgid == ""
+    end
   end
 end
