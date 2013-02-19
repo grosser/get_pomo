@@ -3,7 +3,7 @@ require 'get_pomo/translation'
 
 describe GetPomo::Translation do
   describe :complete? do
-    it{should_not be_complete}
+    it { should_not be_complete }
 
     it "is complete if it has a msgid and a msgstr" do
       subject.msgid="x"
