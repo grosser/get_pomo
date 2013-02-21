@@ -89,9 +89,11 @@ module GetPomo
 
     #"hello" -> hello
     def add_string(string)
-      return if string.strip.empty?
-      raise "not string format: #{string.inspect} on line #{@line_number}" unless string.strip =~ /^['"](.*)['"]$/
-      @current_translation.add_text($1,:to=>@last_method)
+      string = string.strip
+      return if string.empty?
+      raise "not string format: #{string.inspect} on line #{@line_number}" unless string =~ /^['"](.*)['"]$/
+      string_content = $1.gsub(/\\"/, '"')
+      @current_translation.add_text(string_content, :to=>@last_method)
     end
 
     def translation_complete?

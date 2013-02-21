@@ -12,6 +12,11 @@ describe GetPomo::PoFile do
       t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy'}
     end
 
+    it "parses msgid and msgstr with escaping quote" do
+      t = GetPomo::PoFile.parse('msgid "x\"xx"' + "\n" + 'msgstr "y\"yy"')
+      t[0].to_hash.should == {:msgid=>'x"xx',:msgstr=>'y"yy'}
+    end
+
     it "parses a simple msgid and msg with additional whitespace" do
       t = GetPomo::PoFile.parse(%Q(  msgid    "xxx"   \n   msgstr    "yyy"   ))
       t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy'}
