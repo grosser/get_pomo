@@ -42,18 +42,18 @@ module GetPomo
         comment = translation.comment.to_s.split(/\n|\r\n/).map{|line|"#{line}\n"}*''
         msgid_and_msgstr = if translation.plural?
           msgids =
-          %Q(msgid "#{translation.msgid[0]}"\n)+
-          %Q(msgid_plural "#{translation.msgid[1]}"\n)
+          %Q(msgid "#{escape_quotes(translation.msgid[0])}"\n)+
+          %Q(msgid_plural "#{escape_quotes(translation.msgid[1])}"\n)
 
           msgstrs = []
           translation.msgstr.each_with_index do |msgstr,index|
-            msgstrs << %Q(msgstr[#{index}] "#{msgstr}")
+            msgstrs << %Q(msgstr[#{index}] "#{escape_quotes(msgstr)}")
           end
 
           msgids + (msgstrs*"\n")
         else
-          %Q(msgid "#{translation.msgid}"\n)+
-          %Q(msgstr "#{translation.msgstr}")
+          %Q(msgid "#{escape_quotes(translation.msgid)}"\n)+
+          %Q(msgstr "#{escape_quotes(translation.msgstr)}")
         end
 
         comment + msgid_and_msgstr
@@ -61,6 +61,11 @@ module GetPomo
     end
 
     private
+
+    def escape_quotes(txt)
+      txt.gsub /"/, '\"'
+    end
+
 
     #e.g. # fuzzy
     def comment?(line)
@@ -82,7 +87,7 @@ module GetPomo
       method, string = line.match(/^\s*([a-z0-9_\[\]]+)(.*)/)[1..2]
       raise "no method found" unless method
 
-      start_new_translation if method == 'msgid' and translation_complete?
+      start_new_translation if %W(msgid msgctxt).include? method and translation_complete?
       @last_method = method.to_sym
       add_string(string)
     end

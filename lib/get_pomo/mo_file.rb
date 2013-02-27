@@ -1,5 +1,6 @@
 require 'get_pomo/translation'
 require File.join(File.dirname(__FILE__),'..','..','vendor','mofile')
+require File.join(File.dirname(__FILE__),'vendor_patches','mofile_default_utf8')
 
 module GetPomo
   class MoFile

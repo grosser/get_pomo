@@ -1,7 +1,7 @@
 module GetPomo
   class Translation
     FUZZY_REGEX = /^#,\s*fuzzy/
-    attr_accessor :msgid, :msgstr, :comment
+    attr_accessor :msgid, :msgstr, :msgctxt, :comment
 
     def add_text(text,options)
       to = options[:to]
@@ -18,7 +18,7 @@ module GetPomo
     end
 
     def to_hash
-      {:msgid=>msgid,:msgstr=>msgstr,:comment=>comment}.reject{|k,value|value.nil?}
+      {:msgctxt=>msgctxt,:msgid=>msgid,:msgstr=>msgstr,:comment=>comment}.reject{|k,value|value.nil?}
     end
 
     def complete?

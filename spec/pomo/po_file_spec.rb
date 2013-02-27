@@ -41,6 +41,11 @@ describe GetPomo::PoFile do
       t = GetPomo::PoFile.parse(%Q(#test\nmsgid "xxx"\n#another\nmsgstr "yyy"))
       t[0].to_hash.should == {:msgid=>'xxx',:msgstr=>'yyy',:comment=>"#test\n#another\n"}
     end
+
+    it "parses a simple string with msgctxt" do
+      t = GetPomo::PoFile.parse(%Q(msgctxt "www"\nmsgid "xxx"\nmsgstr "yyy"))
+      t[0].to_hash.should == {:msgctxt => 'www', :msgid=>'xxx',:msgstr=>'yyy'}
+    end
   end
 
   describe "instance interface" do
@@ -98,6 +103,21 @@ describe GetPomo::PoFile do
     it "preserves simple syntax" do
       text = %Q(msgid "x"\nmsgstr "y")
       GetPomo::PoFile.to_text(GetPomo::PoFile.parse(text)).should == text
+    end
+
+    it "escape double quotes" do
+      text = 'msgid "x\"xx"' + "\n" + 'msgstr "y\"yy"'
+      po = GetPomo::PoFile.parse(text)
+      GetPomo::PoFile.to_text(po).should == text
+    end
+
+    it "escape double quotes on plurals" do
+      text = 'msgid "x\"xx"' + "\n"
+      text += 'msgid_plural "x\"xx"' + "\n"
+      text += 'msgstr[0] "y\"yy"' + "\n"
+      text += 'msgstr[1] "y\"yy"'
+      po = GetPomo::PoFile.parse(text)
+      GetPomo::PoFile.to_text(po).should == text
     end
 
     it "adds comments" do
