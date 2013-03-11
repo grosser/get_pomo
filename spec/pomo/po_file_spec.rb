@@ -111,6 +111,12 @@ describe GetPomo::PoFile do
       GetPomo::PoFile.to_text(po).should == text
     end
 
+    it "does not escape slashes" do
+      text = 'msgid "x\\"' + "\n" + 'msgstr "x\\"'
+      po = GetPomo::PoFile.parse(text)
+      GetPomo::PoFile.to_text(po).should == text
+    end
+
     it "escape double quotes on plurals" do
       text = 'msgid "x\"xx"' + "\n"
       text += 'msgid_plural "x\"xx"' + "\n"
