@@ -22,6 +22,7 @@ module GetPomo
     #and a msgid / msgstr
     def add_translations_from_text(text)
       start_new_translation
+      text.gsub!(/^#{"\357\273\277"}/, "") #remove boom
       text.split(/$/).each_with_index do |line,index|
         @line_number = index + 1
         next if line.empty?
