@@ -75,6 +75,14 @@ describe GetPomo::PoFile do
       p.add_translations_from_text(text)
       p.to_text.should == text
     end
+
+    it "outputs the msgctxt when present" do
+      text = %Q(msgctxt "zzz"\nmsgid "xxx"\nmsgstr "aaa")
+      p = GetPomo::PoFile.new
+      p.add_translations_from_text(%Q(msgid "xxx"\nmsgstr "yyy"))
+      p.add_translations_from_text(text)
+      p.to_text.should == text
+    end
   end
 
   it "adds plural translations" do
