@@ -11,6 +11,11 @@ describe GetPomo::Translation do
       should be_complete
     end
 
+    it "is complete if it is obsolete" do
+      subject.comment = "#~ msgid Hello\n#~ msgstr Hallo"
+      should be_complete
+    end
+
     it "is not complete if it has an complete msgid" do
       subject.msgid=""
       should_not be_complete
@@ -147,6 +152,15 @@ describe GetPomo::Translation do
       subject.fuzzy = true
       subject.fuzzy = false
       subject.comment.should == "hello"
+    end
+  end
+
+  describe :obsolete? do
+    it{should_not be_obsolete}
+
+    it "is obsolete if a obsolete msgstr comment was added" do
+      subject.comment = "#~ msgstr Hallo"
+      should be_obsolete
     end
   end
 end
