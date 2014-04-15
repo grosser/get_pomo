@@ -1,3 +1,4 @@
+#encoding: utf-8
 require 'get_pomo/translation'
 
 module GetPomo
@@ -22,6 +23,7 @@ module GetPomo
     #and a msgid / msgstr
     def add_translations_from_text(text)
       start_new_translation
+      text.gsub!(/^#{"\357\273\277"}/, "") #remove boom
       text.split(/$/).each_with_index do |line,index|
         @line_number = index + 1
         next if line.empty?
@@ -38,8 +40,15 @@ module GetPomo
     end
 
     def to_text
-      GetPomo.unique_translations(translations).map {|translation|
+      GetPomo.unique_translations(translations).map do |translation|
         comment = translation.comment.to_s.split(/\n|\r\n/).map{|line|"#{line}\n"}*''
+
+        msgctxt = if translation.msgctxt
+          %Q(msgctxt "#{translation.msgctxt}"\n)
+        else
+          ""
+        end
+
         msgid_and_msgstr = if translation.plural?
           msgids =
           %Q(msgid "#{escape_quotes(translation.msgid[0])}"\n)+
@@ -56,8 +65,8 @@ module GetPomo
           %Q(msgstr "#{escape_quotes(translation.msgstr)}")
         end
 
-        comment + msgid_and_msgstr
-      } * "\n\n"
+        comment + msgctxt + msgid_and_msgstr
+      end * "\n\n"
     end
 
     private
@@ -87,7 +96,7 @@ module GetPomo
       method, string = line.match(/^\s*([a-z0-9_\[\]]+)(.*)/)[1..2]
       raise "no method found" unless method
 
-      start_new_translation if %W(msgid msgctxt).include? method and translation_complete?
+      start_new_translation if %W(msgid msgctxt msgctxt).include? method and translation_complete?
       @last_method = method.to_sym
       add_string(string)
     end
@@ -105,7 +114,7 @@ module GetPomo
       return false unless @current_translation
       @current_translation.complete?
     end
-  
+
     def store_translation
       @translations += [@current_translation] if @current_translation.complete?
     end
