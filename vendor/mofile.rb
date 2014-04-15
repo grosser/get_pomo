@@ -176,7 +176,11 @@ module GetPomo
 
       def next_prime(seed)
         require 'mathn'
-        prime = Prime.new
+        prime = if RUBY_VERSION > "1.9.0"
+          Prime::EratosthenesGenerator.new
+        else
+          Prime.new
+        end
         while current = prime.succ
           return current if current > seed
         end
