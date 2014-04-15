@@ -1,6 +1,7 @@
 module GetPomo
   class Translation
     FUZZY_REGEX = /^#,\s*fuzzy/
+    OBSOLETE_REGEX = /^#~\s*msgstr/
     attr_accessor :msgid, :msgstr, :msgctxt, :comment
 
     def add_text(text,options)
@@ -22,11 +23,15 @@ module GetPomo
     end
 
     def complete?
-      not msgid.nil? and not msgstr.nil?
+      (not msgid.nil? and not msgstr.nil?) or obsolete?
     end
 
     def fuzzy?
       !!(comment =~ FUZZY_REGEX)
+    end
+
+    def obsolete?
+      !!(comment =~ OBSOLETE_REGEX)
     end
 
     def fuzzy=(value)
