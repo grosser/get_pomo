@@ -5,6 +5,7 @@ Advanteges over original [mo](http://github.com/mutoh/gettext/blob/abf96713327cc
  - simple architecture + easy to extend/modify
  - emtpy msgstr translations are read
  - comments are included
+ - obsolete translations are included
  - fuzzy can be set/unset
  - multiple translations can be combined in a new po file(with comments and fuzzy and ...)
  - po files can be written from any kind of input
@@ -20,7 +21,7 @@ Setup
     translations = GetPomo::PoFile.parse(File.read('xxx.po')) + GetPomo::PoFile.parse(File.read('yyy.po'))
 
     #and use the data...
-    msgids = translations.reject{|t|t.plural? or t.fuzzy?}.map(&:msgid)
+    msgids = translations.reject{|t|t.plural? or t.fuzzy? or t.obsolete?}.map(&:msgid)
 
     #or write a new po file (unique by msgid)...
     File.open('xxx.po','w){|f|f.print(GetPomo::PoFile.to_text(translations))}
