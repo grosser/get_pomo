@@ -19,7 +19,12 @@ module GetPomo
     end
 
     def to_hash
-      {:msgctxt=>msgctxt,:msgid=>msgid,:msgstr=>msgstr,:comment=>comment}.reject{|k,value|value.nil?}
+      {
+        :msgctxt => msgctxt,
+        :msgid => msgid.nil? ? '' : msgid,
+        :msgstr => msgstr.nil? ? '' : msgstr,
+        :comment => comment
+      }.reject { |_,value| value.nil? }
     end
 
     def complete?
@@ -31,12 +36,7 @@ module GetPomo
     end
 
     def obsolete?
-      obs = if !!(comment =~ OBSOLETE_REGEX)
-        #prevent nullpointer in obsolete msgs
-        self.msgid = '' if msgid.nil?
-        self.msgstr = '' if msgstr.nil?
-      end
-      obs
+      !!(comment =~ OBSOLETE_REGEX)
     end
 
     def fuzzy=(value)

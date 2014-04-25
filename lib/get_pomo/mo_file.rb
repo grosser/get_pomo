@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__),'..','..','vendor','mofile')
 
 module GetPomo
   class MoFile
-    PLURAL_SEPERATOR = "\000"
+    PLURAL_SEPARATOR = "\000"
 
     def self.parse(text)
       MoFile.new.add_translations_from_text(text)
@@ -48,15 +48,15 @@ module GetPomo
     private
 
     def plural_to_string(plural_or_singular)
-      [*plural_or_singular] * PLURAL_SEPERATOR
+      [*plural_or_singular] * PLURAL_SEPARATOR
     end
 
     def plural? string
-      string.include? PLURAL_SEPERATOR
+      string.include? PLURAL_SEPARATOR
     end
 
     def split_plural string
-      string.split PLURAL_SEPERATOR
+      string.split PLURAL_SEPARATOR
     end
   end
 end
