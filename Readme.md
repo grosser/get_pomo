@@ -1,4 +1,4 @@
-A simple and extendable .mo and .po file parser/generator.  
+A simple and extendable .mo and .po file parser/generator.
 
 Advanteges over original [mo](http://github.com/mutoh/gettext/blob/abf96713327cc4c5d35f0a772f3b75ff4819450c/lib/gettext/mofile.rb) / [po](http://github.com/mutoh/gettext/blob/abf96713327cc4c5d35f0a772f3b75ff4819450c/lib/gettext/poparser.rb)-parser:
 
@@ -41,8 +41,14 @@ TODO
  - extracting of version/pluralisation_rule/plurals/translator... (from msgid "")
  - the vendor/mofile is really complex, maybe it can be refactored (also some parts are not needed)
 
-Author
-======
-[Michael Grosser](http://pragmatig.wordpress.com)  
-grosser.michael@gmail.com  
-Hereby placed under public domain, do what you want, just do not hold me accountable...  
+Authors
+=======
+
+### [Contributors](https://github.com/grosser/get_pomo/contributors)
+ - [Dennis-Florian Herr](https://github.com/dfherr)
+ - [Felipe Tanus](https://github.com/fotanus)
+
+[Michael Grosser](http://grosser.it)<br/>
+michael@grosser.it<br/>
+License: MIT<br/>
+[![Build Status](https://travis-ci.org/grosser/get_pomo.png)](https://travis-ci.org/grosser/get_pomo)
