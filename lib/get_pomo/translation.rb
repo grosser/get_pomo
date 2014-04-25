@@ -33,8 +33,8 @@ module GetPomo
     def obsolete?
       obs = if !!(comment =~ OBSOLETE_REGEX)
         #prevent nullpointer in obsolete msgs
-        self.msgid = ''
-        self.msgstr = ''
+        self.msgid = '' if msgid.nil?
+        self.msgstr = '' if msgstr.nil?
       end
       obs
     end
