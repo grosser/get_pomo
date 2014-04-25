@@ -51,18 +51,18 @@ module GetPomo
 
         msgid_and_msgstr = if translation.plural?
           msgids =
-          %Q(msgid "#{escape_quotes(translation.msgid[0])}"\n)+
-          %Q(msgid_plural "#{escape_quotes(translation.msgid[1])}"\n)
+          %Q(msgid "#{translation.msgid[0]}"\n)+
+          %Q(msgid_plural "#{translation.msgid[1]}"\n)
 
           msgstrs = []
           translation.msgstr.each_with_index do |msgstr,index|
-            msgstrs << %Q(msgstr[#{index}] "#{escape_quotes(msgstr)}")
+            msgstrs << %Q(msgstr[#{index}] "#{msgstr}")
           end
 
           msgids + (msgstrs*"\n")
         else
-          %Q(msgid "#{escape_quotes(translation.msgid)}"\n)+
-          %Q(msgstr "#{escape_quotes(translation.msgstr)}")
+          %Q(msgid "#{translation.msgid}"\n)+
+          %Q(msgstr "#{translation.msgstr}")
         end
 
         comment + msgctxt + msgid_and_msgstr
@@ -70,11 +70,6 @@ module GetPomo
     end
 
     private
-
-    def escape_quotes(txt)
-      txt.gsub /"/, '\"'
-    end
-
 
     #e.g. # fuzzy
     def comment?(line)
@@ -106,7 +101,7 @@ module GetPomo
       string = string.strip
       return if string.empty?
       raise "not string format: #{string.inspect} on line #{@line_number}" unless string =~ /^['"](.*)['"]$/
-      string_content = $1.gsub(/\\"/, '"')
+      string_content = string[1..-2] #remove leading and trailing quotes from content
       @current_translation.add_text(string_content, :to=>@last_method)
     end
 

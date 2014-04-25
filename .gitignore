@@ -1,1 +1,11 @@
+# Gem Package
 pkg
+
+#IDE
+
+.idea
+
+#rvm
+.ruby-version
+.ruby-gemset
+

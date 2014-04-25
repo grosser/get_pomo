@@ -159,8 +159,15 @@ describe GetPomo::Translation do
     it{should_not be_obsolete}
 
     it "is obsolete if a obsolete msgstr comment was added" do
-      subject.comment = "#~ msgstr Hallo"
+      subject.comment = "#~ msgstr hello"
       should be_obsolete
+    end
+
+    it "has valid msgid and msgstr" do
+      subject.comment = "#~ msgstr hello"
+      should be_obsolete
+      subject.msgid.should_not be_nil
+      subject.msgstr.should_not be_nil
     end
   end
 end

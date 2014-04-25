@@ -31,7 +31,12 @@ module GetPomo
     end
 
     def obsolete?
-      !!(comment =~ OBSOLETE_REGEX)
+      obs = if !!(comment =~ OBSOLETE_REGEX)
+        #prevent nullpointer in obsolete msgs
+        self.msgid = '' if msgid.nil?
+        self.msgstr = '' if msgstr.nil?
+      end
+      obs
     end
 
     def fuzzy=(value)
