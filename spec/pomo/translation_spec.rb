@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'get_pomo/translation'
 
 describe GetPomo::Translation do
-  describe :complete? do
+  describe "#complete?" do
     it { should_not be_complete }
 
     it "is complete if it has a msgid and a msgstr" do
@@ -33,7 +33,7 @@ describe GetPomo::Translation do
     end
   end
 
-  describe :add_text do
+  describe "#add_text" do
     it "adds a simple msgid" do
       subject.add_text("x",:to=>:msgid)
       subject.msgid.should == "x"
@@ -64,7 +64,7 @@ describe GetPomo::Translation do
     end
   end
 
-  describe :plural? do
+  describe "#plural?" do
     it{should_not be_plural}
 
     it "is plural if msgid is plural" do
@@ -84,7 +84,7 @@ describe GetPomo::Translation do
     end
   end
 
-  describe :singular? do
+  describe "#singular?" do
     it{should be_singular}
 
     it "is not singular if msgid is plural" do
@@ -104,7 +104,7 @@ describe GetPomo::Translation do
     end
   end
 
-  describe :header? do
+  describe "#header?" do
     it{should_not be_header}
 
     it "is header if msgid is empty" do
@@ -118,7 +118,7 @@ describe GetPomo::Translation do
     end
   end
 
-  describe :fuzzy? do
+  describe "#fuzzy?" do
     it{should_not be_fuzzy}
 
     it "is fuzzy if a fuzzy comment was added" do
@@ -155,19 +155,12 @@ describe GetPomo::Translation do
     end
   end
 
-  describe :obsolete? do
-    it{should_not be_obsolete}
+  describe "#obsolete?" do
+    it { should_not be_obsolete }
 
     it "is obsolete if a obsolete msgstr comment was added" do
       subject.comment = "#~ msgstr hello"
-      should be_obsolete
-    end
-
-    it "has valid msgid and msgstr" do
-      subject.comment = "#~ msgstr hello"
-      should be_obsolete
-      subject.msgid.should_not be_nil
-      subject.msgstr.should_not be_nil
+      subject.obsolete?.should == true
     end
   end
 end
