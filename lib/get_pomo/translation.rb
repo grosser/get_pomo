@@ -26,8 +26,8 @@ module GetPomo
     def to_hash
       {
         :msgctxt => msgctxt,
-        :msgid => msgid.nil? ? '' : msgid,
-        :msgstr => msgstr.nil? ? '' : msgstr,
+        :msgid => msgid,
+        :msgstr => msgstr,
         :comment => comment
       }.reject { |_,value| value.nil? }
     end
