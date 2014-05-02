@@ -11,11 +11,6 @@ describe GetPomo::Translation do
       should be_complete
     end
 
-    it "is complete if it is obsolete" do
-      subject.comment = "#~ msgid Hello\n#~ msgstr Hallo"
-      should be_complete
-    end
-
     it "is not complete if it has an complete msgid" do
       subject.msgid=""
       should_not be_complete
@@ -62,6 +57,13 @@ describe GetPomo::Translation do
       subject.add_text("y",:to=>'msgstr[1]')
       subject.msgstr.should == ['x','ay']
     end
+
+    it "initializes msgstr and msgid if an obsolete translation is added" do
+      subject.add_text("#~ msgid Hello\n#~ msgstr Hallo", :to=>:comment)
+      subject.msgstr.should_not be_nil
+      subject.msgid.should_not be_nil
+    end
+
   end
 
   describe "#plural?" do
