@@ -12,6 +12,11 @@ module GetPomo
       elsif to.to_s =~ /^msgstr\[(\d)\]$/
         self.msgstr ||= []
         msgstr[$1.to_i] = msgstr[$1.to_i].to_s + text
+      elsif to.to_sym == :comment && text =~ OBSOLETE_REGEX
+        # initialize msgid and msgstr on obsolete translations
+        self.msgid ||= ""
+        self.msgstr ||= ""
+        send("#{to}=",send(to).to_s+text)
       else
         #simple form
         send("#{to}=",send(to).to_s+text)
@@ -19,11 +24,16 @@ module GetPomo
     end
 
     def to_hash
-      {:msgctxt=>msgctxt,:msgid=>msgid,:msgstr=>msgstr,:comment=>comment}.reject{|k,value|value.nil?}
+      {
+        :msgctxt => msgctxt,
+        :msgid => msgid,
+        :msgstr => msgstr,
+        :comment => comment
+      }.reject { |_,value| value.nil? }
     end
 
     def complete?
-      (not msgid.nil? and not msgstr.nil?) or obsolete?
+      not msgid.nil? and not msgstr.nil?
     end
 
     def fuzzy?
@@ -31,12 +41,7 @@ module GetPomo
     end
 
     def obsolete?
-      obs = if !!(comment =~ OBSOLETE_REGEX)
-        #prevent nullpointer in obsolete msgs
-        self.msgid = '' if msgid.nil?
-        self.msgstr = '' if msgstr.nil?
-      end
-      obs
+      !!(comment =~ OBSOLETE_REGEX)
     end
 
     def fuzzy=(value)
