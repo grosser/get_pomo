@@ -24,8 +24,8 @@ module GetPomo
           # (\n would match \\n in text, \r\n does not match \\r\\n)
           # this is still monkey patching but should work fine
           translations[index].comment.gsub(/\n#/, "\r\n#").split(/\r\n/).each do |com|
-            # append all references on top of the existing comment
-            trans.comment = com.chomp + "\n" + trans.comment if com.start_with?("#: ")
+            # prepend all references to the existing reference
+            trans.comment.sub!("#:", com.chomp) if com.start_with?("#: ") && !trans.comment.include?(com.sub("#:", ''))
           end
         end
       else

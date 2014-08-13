@@ -28,8 +28,14 @@ msgstr "yyy"
 msgid "xxx"
 msgstr "yyy"
 
+# translator comment
 #: Reference6
+#, aflag
 msgid "xxx"
+msgstr "yyy"
+
+#: Reference7
+msgid "xyz"
 msgstr "yyy"
 
 #: Reference7
