@@ -3,10 +3,35 @@ module GetPomo
   autoload :VERSION, "get_pomo/version"
   
   extend self
-  
-  def self.unique_translations(translations)
-    last_seen_at_index = {}
-    translations.each_with_index {|translation,index|last_seen_at_index[translation.msgid]=index}
-    last_seen_at_index.values.sort.map{|index| translations[index]}
+
+  # merge = true merges references of non unique translations
+  def self.unique_translations(translations, merge = false)
+    seen_at_indexes = {}
+    translations.each_with_index do |translation, index|
+      key = translation.msgid
+      key += "+" + translation.msgctxt if translation.msgctxt #some additional character required as empty msgctxt != no msgctxt
+      if seen_at_indexes.has_key?(key)
+        seen_at_indexes[key].push(index)
+      else
+        seen_at_indexes[key] = [index]
+      end
+    end
+    seen_at_indexes.values.map do |indexes|
+      if merge
+        trans = translations[indexes.pop]
+        indexes.each do |index|
+          # sub starting \n# to \r\n as a split on \r\n should be safe
+          # (\n would match \\n in text, \r\n does not match \\r\\n)
+          # this is still monkey patching but should work fine
+          translations[index].comment.gsub(/\n#/, "\r\n#").split(/\r\n/).each do |com|
+            # prepend all references to the existing reference
+            trans.comment.sub!("#:", com.chomp) if com.start_with?("#: ") && !trans.comment.include?(com.sub("#:", ''))
+          end
+        end
+      else
+        trans = translations[indexes.last]
+      end
+      trans
+    end
   end
 end

@@ -7,9 +7,9 @@ module GetPomo
       PoFile.new.add_translations_from_text(text)
     end
 
-    def self.to_text(translations)
+    def self.to_text(translations, merge = false)
       p = PoFile.new(:translations=>translations)
-      p.to_text
+      p.to_text(merge)
     end
 
     attr_reader :translations
@@ -39,8 +39,8 @@ module GetPomo
       translations
     end
 
-    def to_text
-      GetPomo.unique_translations(translations).map do |translation|
+    def to_text(merge = false)
+      GetPomo.unique_translations(translations, merge).map do |translation|
         comment = translation.comment.to_s.split(/\n|\r\n/).map{|line|"#{line}\n"}*''
 
         msgctxt = if translation.msgctxt
