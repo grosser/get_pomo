@@ -1,0 +1,37 @@
+# Unique translation test fixture
+#
+#, fuzzy
+msgid ""
+msgstr ""
+
+#: Reference1
+msgctxt "context1"
+msgid "xxx"
+msgstr "yyy"
+
+#: Reference2
+msgctxt "context2"
+msgid "xxx"
+msgstr "yyy"
+
+#: Reference3
+msgctxt "context2"
+msgid "xxx"
+msgstr "yyy"
+
+#: Reference4
+msgctxt ""
+msgid "xxx"
+msgstr "yyy"
+
+#: Reference5
+msgid "xxx"
+msgstr "yyy"
+
+#: Reference6
+msgid "xxx"
+msgstr "yyy"
+
+#: Reference7
+msgid "xyz"
+msgstr "yyy"
