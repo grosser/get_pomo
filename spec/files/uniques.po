@@ -4,10 +4,14 @@
 msgid ""
 msgstr ""
 
+#: Reference0
+msgid "xxx"
+msgstr "yyy"
+
 #: Reference1
 msgctxt "context1"
 msgid "xxx"
-msgstr "yyy"
+msgstr "xyz"
 
 #: Reference2
 msgctxt "context2"
@@ -28,16 +32,27 @@ msgstr "yyy"
 msgid "xxx"
 msgstr "yyy"
 
+#: Reference8
+msgid "xyz"
+msgstr "xxx"
+
 # translator comment
 #: Reference6
 #, aflag
-msgid "xxx"
+msgid "xyz"
+msgstr "zyx"
+
+#: Reference7
+msgid "xzy"
 msgstr "yyy"
 
 #: Reference7
-msgid "xyz"
-msgstr "yyy"
+msgid "xzy"
+msgstr "yxy"
 
-#: Reference7
-msgid "xyz"
-msgstr "yyy"
+#, fuzzy
+#~| msgctxt "context1"
+#~| msgid "xxx"
+#~ msgctxt "context2"
+#~ msgid "xxx"
+#~ msgstr "xyz"
