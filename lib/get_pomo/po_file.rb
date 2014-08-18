@@ -3,13 +3,17 @@ require 'get_pomo/translation'
 
 module GetPomo
   class PoFile
-    def self.parse(text)
-      PoFile.new.add_translations_from_text(text)
+    def self.parse(text, options = {})
+      default_options = {:parse_obsoletes => false}
+      options = default_options.merge(options)
+      PoFile.new.add_translations_from_text(text, options)
     end
 
-    def self.to_text(translations, merge = false)
+    def self.to_text(translations, options = {})
+      default_options = {:merge => false}
+      options = default_options.merge(options)
       p = PoFile.new(:translations=>translations)
-      p.to_text(merge)
+      p.to_text(options)
     end
 
     attr_reader :translations
@@ -21,7 +25,9 @@ module GetPomo
     #the text is split into lines and then converted into logical translations
     #each translation consists of comments(that come before a translation)
     #and a msgid / msgstr
-    def add_translations_from_text(text)
+    def add_translations_from_text(text, options = {})
+      default_options = {:parse_obsoletes => false}
+      options = default_options.merge(options)
       start_new_translation
       text.gsub!(/^#{"\357\273\277"}/, "") #remove boom
       text.split(/$/).each_with_index do |line,index|
@@ -35,12 +41,14 @@ module GetPomo
           add_string line
         end
       end
-      start_new_translation #instance_variable has to be overwritten or errors can occur on next add
+      start_new_translation(options[:parse_obsoletes]) #instance_variable has to be overwritten or errors can occur on next add
       translations
     end
 
-    def to_text(merge = false)
-      GetPomo.unique_translations(translations, merge).map do |translation|
+    def to_text(options = {})
+      default_options = {:merge => false}
+      options = default_options.merge(options)
+      GetPomo.unique_translations(translations, options[:merge]).map do |translation|
         comment = translation.comment.to_s.split(/\n|\r\n/).map{|line|"#{line}\n"}*''
 
         msgctxt = if translation.msgctxt
@@ -61,7 +69,7 @@ module GetPomo
 
           msgids + (msgstrs*"\n")
         else
-          %Q(msgid "#{translation.msgid}"\n)+
+          translation.obsolete? ? "" : %Q(msgid "#{translation.msgid}"\n)+
           %Q(msgstr "#{translation.msgstr}")
         end
 
@@ -90,7 +98,6 @@ module GetPomo
     def parse_method_call(line)
       method, string = line.match(/^\s*([a-z0-9_\[\]]+)(.*)/)[1..2]
       raise "no method found" unless method
-
       start_new_translation if %W(msgid msgctxt msgctxt).include? method and translation_complete?
       @last_method = method.to_sym
       add_string(string)
@@ -110,12 +117,15 @@ module GetPomo
       @current_translation.complete?
     end
 
-    def store_translation
-      @translations += [@current_translation] if @current_translation.complete?
+    def store_translation(parse_obsoletes = false)
+      if translation_complete? && (parse_obsoletes || !@current_translation.obsolete?)
+       @translations += [@current_translation]
+      end
+
     end
 
-    def start_new_translation
-      store_translation if translation_complete?
+    def start_new_translation(parse_obsoletes = false)
+      store_translation(parse_obsoletes) if translation_complete?
       @current_translation = Translation.new
     end
   end

@@ -13,9 +13,6 @@ module GetPomo
         self.msgstr ||= []
         msgstr[$1.to_i] = msgstr[$1.to_i].to_s + text
       elsif to.to_sym == :comment && text =~ OBSOLETE_REGEX
-        # initialize msgid and msgstr on obsolete translations
-        self.msgid ||= ""
-        self.msgstr ||= ""
         send("#{to}=",send(to).to_s+text)
       else
         #simple form
@@ -33,7 +30,7 @@ module GetPomo
     end
 
     def complete?
-      not msgid.nil? and not msgstr.nil?
+      (not msgid.nil? and not msgstr.nil?) or self.obsolete?
     end
 
     def fuzzy?

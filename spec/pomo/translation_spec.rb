@@ -58,11 +58,12 @@ describe GetPomo::Translation do
       subject.msgstr.should == ['x','ay']
     end
 
-    it "initializes msgstr and msgid if an obsolete translation is added" do
+    it "has no msgstr and msgid but is complete if an obsolete translation is added" do
       subject.add_text("#~ msgid Hello\n#~ msgstr Hallo", :to=>:comment)
       subject.obsolete?.should be_true
-      subject.msgstr.should_not be_nil
-      subject.msgid.should_not be_nil
+      subject.complete?.should be_true
+      subject.msgstr.should be_nil
+      subject.msgid.should be_nil
     end
 
   end
