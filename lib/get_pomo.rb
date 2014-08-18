@@ -44,46 +44,41 @@ module GetPomo
         end
       end
     end
-    seen_msgids.keys.each do |k|
-    end
-    trans = []
+    trans_indexes = {} # maps unique translation ids as keys to mergeable ids as value array
+
     seen_msgids.values.each do |value|
-      if merge
-        if value.is_a?(Hash)
-          value.values.each do |v|
-            t = translations[v.pop]
-            v.each do |index|
-              # sub starting \n# to \r\n as a split on \r\n should be safe
-              # (\n would match \\n in text, \r\n does not match \\r\\n)
-              # this is still monkey patching but should work fine
-              translations[index].comment.gsub(/\n#/, "\r\n#").split(/\r\n/).each do |com|
-                # prepend all references to the existing reference
-                t.comment.sub!("#:", com.chomp) if com.start_with?("#: ") && !t.comment.include?(com.sub("#:", ''))
-              end
-            end
-            trans.push(t)
+      if value.is_a?(Hash)
+        value.values.each do |v|
+          id = v.pop
+          trans_indexes[id] = []
+          v.each do |index|
+             trans_indexes[id].push(index)
           end
-        else
-          t = translations[value.pop]
-          value.each do |index|
-            # sub starting \n# to \r\n as a split on \r\n should be safe
-            # (\n would match \\n in text, \r\n does not match \\r\\n)
-            # this is still monkey patching but should work fine
-            translations[index].comment.gsub(/\n#/, "\r\n#").split(/\r\n/).each do |com|
-              # prepend all references to the existing reference
-              t.comment.sub!("#:", com.chomp) if com.start_with?("#: ") && !t.comment.include?(com.sub("#:", ''))
-            end
-          end
-          trans.push(t)
         end
       else
-        if value.is_a?(Hash)
-           value.values.each do |v|
-            trans.push(translations[v.last])
-           end
-        else
-          trans.push(translations[value.last])
+        id = value.pop
+        trans_indexes[id] = []
+        value.each do |index|
+          trans_indexes[id].push(index)
         end
+      end
+    end
+
+    trans = trans_indexes.keys.sort.map do |index|
+      if merge
+        t = translations[index]
+        trans_indexes[index].each do |id|
+          # sub starting \n# to \r\n as a split on \r\n should be safe
+          # (\n would match \\n in text, \r\n does not match \\r\\n)
+          # this is still monkey patching but should work fine
+          translations[id].comment.gsub(/\n#/, "\r\n#").split(/\r\n/).each do |com|
+            # prepend all references to the existing reference
+            t.comment.sub!("#:", com.chomp) if com.start_with?("#: ") && !t.comment.include?(com.sub("#:", ''))
+          end
+        end
+        t
+      else
+        translations[index]
       end
     end
     trans.concat(obsoletes) unless obsoletes.nil?
