@@ -5,8 +5,9 @@ Advanteges over original [mo](http://github.com/mutoh/gettext/blob/abf96713327cc
  - simple architecture + easy to extend/modify
  - emtpy msgstr translations are read
  - comments are included
- - obsolete translations are included
+ - obsolete translations are included if enabled
  - fuzzy can be set/unset
+ - references of non unique translations can be merged
  - multiple translations can be combined in a new po file(with comments and fuzzy and ...)
  - po files can be written from any kind of input
  - easy mo-file handling/merging
@@ -17,14 +18,14 @@ Setup
     sudo gem install get_pomo
 
 ###Static interface
-    #parse po files
-    translations = GetPomo::PoFile.parse(File.read('xxx.po')) + GetPomo::PoFile.parse(File.read('yyy.po'))
+    #parse po files, first with obsolete messages second without
+    translations = GetPomo::PoFile.parse(File.read('xxx.po'), :parse_obsoletes => true) + GetPomo::PoFile.parse(File.read('yyy.po'))
 
     #and use the data...
     msgids = translations.reject{|t|t.plural? or t.fuzzy? or t.obsolete?}.map(&:msgid)
 
-    #or write a new po file (unique by msgid)...
-    File.open('xxx.po','w){|f|f.print(GetPomo::PoFile.to_text(translations))}
+    #or write a new po file (unique by msgid, with merged references for non uniques)...
+    File.open('xxx.po','w){|f|f.print(GetPomo::PoFile.to_text(translations, :merge => true))}
 
 
 ###Instance interface

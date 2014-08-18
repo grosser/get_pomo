@@ -51,6 +51,29 @@ describe GetPomo::PoFile do
       t = GetPomo::PoFile.parse(%Q(msgctxt "www"\nmsgid "xxx"\nmsgstr "yyy"))
       t[0].to_hash.should == {:msgctxt => 'www', :msgid=>'xxx',:msgstr=>'yyy'}
     end
+
+    it "does not parse obsolete messages by default" do
+      t = GetPomo::PoFile.parse(File.read('spec/files/uniques.po'))
+      t = GetPomo.unique_translations(t)
+      t[0].to_hash.should == {:msgid => "", :msgstr => "", :comment => "# Unique translation test fixture\n#\n#, fuzzy\n"}
+      t[1].to_hash.should == {:msgctxt => "context1", :msgid => "xxx", :msgstr => "xyz", :comment => "#: Reference1\n"}
+      t[2].to_hash.should == {:msgctxt => "context2", :msgid => "xxx", :msgstr => "yyy", :comment => "#: Reference3\n"}
+      t[3].to_hash.should == {:msgctxt => "", :msgid => "xxx", :msgstr => "yyy", :comment => "#: Reference4\n"}
+      t[4].to_hash.should == {:msgid => "xyz", :msgstr => "zyx", :comment => "# translator comment\n#: Reference6\n#, aflag\n"}
+      t[5].to_hash.should == {:msgid => "xzy", :msgstr => "yxy", :comment => "#: Reference7\n"}
+    end
+
+    it "parses obsolete messages if option is set" do
+      t = GetPomo::PoFile.parse(File.read('spec/files/uniques.po'), :parse_obsoletes => true)
+      t = GetPomo.unique_translations(t)
+      t[0].to_hash.should == {:msgid => "", :msgstr => "", :comment => "# Unique translation test fixture\n#\n#, fuzzy\n"}
+      t[1].to_hash.should == {:msgctxt => "context1", :msgid => "xxx", :msgstr => "xyz", :comment => "#: Reference1\n"}
+      t[2].to_hash.should == {:msgctxt => "context2", :msgid => "xxx", :msgstr => "yyy", :comment => "#: Reference3\n"}
+      t[3].to_hash.should == {:msgctxt => "", :msgid => "xxx", :msgstr => "yyy", :comment => "#: Reference4\n"}
+      t[4].to_hash.should == {:msgid => "xyz", :msgstr => "zyx", :comment => "# translator comment\n#: Reference6\n#, aflag\n"}
+      t[5].to_hash.should == {:msgid => "xzy", :msgstr => "yxy", :comment => "#: Reference7\n"}
+      t[6].to_hash.should == {:comment => "#, fuzzy\n#~| msgctxt \"context1\"\n#~| msgid \"xxx\"\n#~ msgctxt \"context2\"\n#~ msgid \"xxx\"\n#~ msgstr \"xyz\"\n"}
+    end
   end
 
   describe "instance interface" do
@@ -86,6 +109,7 @@ describe GetPomo::PoFile do
       p = GetPomo::PoFile.new
       p.add_translations_from_text(%Q(msgid "xxx"\nmsgstr "yyy"))
       p.add_translations_from_text(text)
+      p.add_translations_from_text(%Q(msgid "xxx"\nmsgstr "yzy"))
       p.to_text.should == text
     end
   end

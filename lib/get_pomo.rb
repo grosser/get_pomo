@@ -17,7 +17,8 @@ module GetPomo
     # hash with msgid's as keys.
     # value is array if that msgid got no msgctxt
     # value is hash if that msgid got a msgctxt
-    translations.each_with_index do |translation, index|
+    obsoletes = translations.select{|t| t.obsolete?}
+    translations.reject{ |t| t.obsolete?}.each_with_index do |translation, index|
       key = translation.msgid
       if seen_msgids.has_key?(key) # msgid not unique?
         if seen_msgids[key].is_a?(Hash) # other translation with same msgid has a msgctxt?
@@ -33,7 +34,6 @@ module GetPomo
             seen_msgids[key] = {translation.msgctxt => [index]}
           else # otherwise just push the new found translation for merge
             seen_msgids[key].push(index)
-            puts key + " id: #{index}"
           end
         end
       else #msgid is unique so far
@@ -45,7 +45,6 @@ module GetPomo
       end
     end
     seen_msgids.keys.each do |k|
-      puts "\"#{k}\""
     end
     trans = []
     seen_msgids.values.each do |value|
@@ -83,11 +82,11 @@ module GetPomo
             trans.push(translations[v.last])
            end
         else
-          puts value.last
           trans.push(translations[value.last])
         end
       end
     end
+    trans.concat(obsoletes) unless obsoletes.nil?
     trans
   end
 end
