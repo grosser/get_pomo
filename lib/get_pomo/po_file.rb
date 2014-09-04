@@ -26,7 +26,7 @@ module GetPomo
     # and a msgid / msgstr
     def add_translations_from_text(text, options = {})
       # only keep valid options for this method
-      options.delete_if do |key|
+      options.delete_if do |key, value|
         !([:parse_obsoletes].include?(key))
       end
       # default options for this method
@@ -51,7 +51,7 @@ module GetPomo
 
     def to_text(options = {})
       # only keep valid options for this method
-      options.delete_if do |key|
+      options.delete_if do |key, value|
         !([:merge].include?(key))
       end
       # default options for this method
