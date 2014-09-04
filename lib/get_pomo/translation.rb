@@ -30,7 +30,7 @@ module GetPomo
     end
 
     def complete?
-      (not msgid.nil? and not msgstr.nil?) or self.obsolete?
+      (not msgid.nil? and not msgstr.nil?) or obsolete?
     end
 
     def fuzzy?

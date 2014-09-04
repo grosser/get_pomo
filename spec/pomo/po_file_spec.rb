@@ -73,6 +73,16 @@ describe GetPomo::PoFile do
       t[4].to_hash.should == {:msgid => "xyz", :msgstr => "zyx", :comment => "# translator comment\n#: Reference6\n#, aflag\n"}
       t[5].to_hash.should == {:msgid => "xzy", :msgstr => "yxy", :comment => "#: Reference7\n"}
       t[6].to_hash.should == {:comment => "#, fuzzy\n#~| msgctxt \"context1\"\n#~| msgid \"xxx\"\n#~ msgctxt \"context2\"\n#~ msgid \"xxx\"\n#~ msgstr \"xyz\"\n"}
+      t[7].to_hash.should == {:comment => "#~ msgctxt \"old thing\"\n#~ msgid \"oldid\"\n#~ msgstr \"this is old\"\n"}
+    end
+
+    it "uses default options on consecutive calls without options" do
+      t = GetPomo::PoFile.parse(File.read('spec/files/uniques.po'), :parse_obsoletes => true)
+      t = GetPomo.unique_translations(t)
+      t.size.should == 8
+      t = GetPomo::PoFile.parse(File.read('spec/files/uniques.po'))
+      t = GetPomo.unique_translations(t)
+      t.size.should == 6
     end
   end
 
@@ -181,5 +191,17 @@ describe GetPomo::PoFile do
       text = %Q(msgid "one"\nmsgstr "1"\nmsgid "one"\nmsgstr "001")
       GetPomo::PoFile.to_text(GetPomo::PoFile.parse(text)).should ==  %Q(msgid "one"\nmsgstr "001")
     end
+
+    it "merges non unique translations" do
+      text = %Q(# hi\n#: a_ref\nmsgctxt "one"\nmsgid "abc"\nmsgstr "xyz"\n\n# bye\n#: b_ref\nmsgctxt "one"\nmsgid "abc"\nmsgstr "glhf"\n)
+      GetPomo::PoFile.to_text(GetPomo::PoFile.parse(text), :merge => true).should == "# bye\n#: a_ref b_ref\nmsgctxt \"one\"\nmsgid \"abc\"\nmsgstr \"glhf\""
+    end
+
+    it "uses default options on consecutive calls without options" do
+      text = %Q(# hi\n#: a_ref\nmsgctxt "one"\nmsgid "abc"\nmsgstr "xyz"\n\n# bye\n#: b_ref\nmsgctxt "one"\nmsgid "abc"\nmsgstr "glhf"\n)
+      GetPomo::PoFile.to_text(GetPomo::PoFile.parse(text), :merge => true).should == "# bye\n#: a_ref b_ref\nmsgctxt \"one\"\nmsgid \"abc\"\nmsgstr \"glhf\""
+      GetPomo::PoFile.to_text(GetPomo::PoFile.parse(text)).should == "# bye\n#: b_ref\nmsgctxt \"one\"\nmsgid \"abc\"\nmsgstr \"glhf\""
+    end
+
   end
 end
