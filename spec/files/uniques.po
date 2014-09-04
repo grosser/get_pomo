@@ -56,3 +56,8 @@ msgstr "yxy"
 #~ msgctxt "context2"
 #~ msgid "xxx"
 #~ msgstr "xyz"
+
+
+#~ msgctxt "old thing"
+#~ msgid "oldid"
+#~ msgstr "this is old"

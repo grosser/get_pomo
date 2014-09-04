@@ -15,6 +15,7 @@ describe GetPomo do
     t[4].to_hash.should == {:msgid => "xyz", :msgstr => "zyx", :comment => "# translator comment\n#: Reference6\n#, aflag\n"}
     t[5].to_hash.should == {:msgid => "xzy", :msgstr => "yxy", :comment => "#: Reference7\n"}
     t[6].to_hash.should == {:comment => "#, fuzzy\n#~| msgctxt \"context1\"\n#~| msgid \"xxx\"\n#~ msgctxt \"context2\"\n#~ msgid \"xxx\"\n#~ msgstr \"xyz\"\n"}
+    t[7].to_hash.should == {:comment => "#~ msgctxt \"old thing\"\n#~ msgid \"oldid\"\n#~ msgstr \"this is old\"\n"}
   end
 
   it "merges non unique translations correctly" do
@@ -27,5 +28,6 @@ describe GetPomo do
     t[4].to_hash.should == {:msgid => "xyz", :msgstr => "zyx", :comment => "# translator comment\n#: Reference8 Reference6\n#, aflag\n"}
     t[5].to_hash.should == {:msgid => "xzy", :msgstr => "yxy", :comment => "#: Reference7\n"}
     t[6].to_hash.should == {:comment => "#, fuzzy\n#~| msgctxt \"context1\"\n#~| msgid \"xxx\"\n#~ msgctxt \"context2\"\n#~ msgid \"xxx\"\n#~ msgstr \"xyz\"\n"}
+    t[7].to_hash.should == {:comment => "#~ msgctxt \"old thing\"\n#~ msgid \"oldid\"\n#~ msgstr \"this is old\"\n"}
   end
 end

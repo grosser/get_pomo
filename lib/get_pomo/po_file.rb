@@ -4,15 +4,11 @@ require 'get_pomo/translation'
 module GetPomo
   class PoFile
     def self.parse(text, options = {})
-      default_options = {:parse_obsoletes => false}
-      options = default_options.merge(options)
       PoFile.new.add_translations_from_text(text, options)
     end
 
     def self.to_text(translations, options = {})
-      default_options = {:merge => false}
-      options = default_options.merge(options)
-      p = PoFile.new(:translations=>translations)
+      p = PoFile.new(:translations => translations)
       p.to_text(options)
     end
 
@@ -20,14 +16,22 @@ module GetPomo
 
     def initialize(options = {})
       @translations = options[:translations] || []
+      # no object options should be set through initialize arguments for now,
+      # as they are meant to be changeable for each method call
+      @options =  {:parse_obsoletes => false, :merge => false}
     end
 
-    #the text is split into lines and then converted into logical translations
-    #each translation consists of comments(that come before a translation)
-    #and a msgid / msgstr
+    # the text is split into lines and then converted into logical translations
+    # each translation consists of comments(that come before a translation)
+    # and a msgid / msgstr
     def add_translations_from_text(text, options = {})
+      # only keep valid options for this method
+      options.keep_if do |key|
+        [:parse_obsoletes].include?(key)
+      end
+      # default options for this method
       default_options = {:parse_obsoletes => false}
-      options = default_options.merge(options)
+      @options.merge!(default_options.merge(options))
       start_new_translation
       text.gsub!(/^#{"\357\273\277"}/, "") #remove boom
       text.split(/$/).each_with_index do |line,index|
@@ -41,13 +45,18 @@ module GetPomo
           add_string line
         end
       end
-      start_new_translation(options[:parse_obsoletes]) #instance_variable has to be overwritten or errors can occur on next add
+      start_new_translation #instance_variable has to be overwritten or errors can occur on next add
       translations
     end
 
     def to_text(options = {})
+      # only keep valid options for this method
+      options.keep_if do |key|
+        [:merge].include?(key)
+      end
+      # default options for this method
       default_options = {:merge => false}
-      options = default_options.merge(options)
+      @options.merge!(default_options.merge(options))
       GetPomo.unique_translations(translations, options[:merge]).map do |translation|
         comment = translation.comment.to_s.split(/\n|\r\n/).map{|line|"#{line}\n"}*''
 
@@ -117,15 +126,14 @@ module GetPomo
       @current_translation.complete?
     end
 
-    def store_translation(parse_obsoletes = false)
-      if translation_complete? && (parse_obsoletes || !@current_translation.obsolete?)
+    def store_translation
+      if translation_complete? && (@options[:parse_obsoletes] || !@current_translation.obsolete?)
        @translations += [@current_translation]
       end
-
     end
 
-    def start_new_translation(parse_obsoletes = false)
-      store_translation(parse_obsoletes) if translation_complete?
+    def start_new_translation
+      store_translation if translation_complete?
       @current_translation = Translation.new
     end
   end
