@@ -15,11 +15,7 @@
     $Id: mo.rb,v 1.10 2008/06/17 16:40:52 mutoh Exp $
 =end
 
-require File.join(File.dirname(__FILE__),'iconv')
 require 'stringio'
-
-#Modifications:
-#  use Iconv or FastGettext::Icvon
 
 module GetPomo
   module GetText
@@ -46,8 +42,12 @@ module GetPomo
         :trans_sysdep_tab_offset
       end
 
-      MAGIC_BIG_ENDIAN    = "\x95\x04\x12\xde"
+      MAGIC_BIG_ENDIAN = "\x95\x04\x12\xde"
       MAGIC_LITTLE_ENDIAN = "\xde\x12\x04\x95"
+      if "".respond_to?(:force_encoding)
+        MAGIC_BIG_ENDIAN.force_encoding("ASCII-8BIT")
+        MAGIC_LITTLE_ENDIAN.force_encoding("ASCII-8BIT")
+      end
 
       def self.open(arg = nil, output_charset = nil)
         result = self.new(output_charset)
@@ -149,18 +149,9 @@ module GetPomo
               @plural = "0" unless @plural
             end
           else
-            if @output_charset
-              begin
-                iconv = Iconv || FastGettext::Iconv
-                str = iconv.conv(@output_charset, @charset, str) if @charset
-              rescue iconv::Failure
-                if $DEBUG
-                  warn "@charset = ", @charset
-                  warn"@output_charset = ", @output_charset
-                  warn "msgid = ", original_strings[i]
-                  warn "msgstr = ", str
-                end
-              end
+            if @charset and @output_charset
+              str = convert_encoding(str, original_strings[i])
+              original_strings[i] = convert_encoding(original_strings[i], original_strings[i])
             end
           end
           self[original_strings[i]] = str.freeze
@@ -168,21 +159,26 @@ module GetPomo
         self
       end
 
+
+
       # Is this number a prime number ?
       # http://apidock.com/ruby/Prime
       def prime?(number)
         ('1' * number) !~ /^1?$|^(11+?)\1+$/
       end
 
-      def next_prime(seed)
-        require 'mathn'
-        prime = if RUBY_VERSION > "1.9.0"
-          Prime::EratosthenesGenerator.new
-        else
-          Prime.new
+      begin
+        require 'prime'
+        def next_prime(seed)
+          Prime.instance.find{|x| x > seed }
         end
-        while current = prime.succ
-          return current if current > seed
+      rescue LoadError
+        def next_prime(seed)
+          require 'mathn'
+          prime = Prime.new
+          while current = prime.succ
+            return current if current > seed
+          end
         end
       end
 
@@ -232,17 +228,17 @@ module GetPomo
 
         orig_table_data = Array.new()
         ary.each{|item, _|
-          orig_table_data.push(item.size)
+          orig_table_data.push(item.bytesize)
           orig_table_data.push(pos)
-          pos += item.size + 1 # +1 is <NUL>
+          pos += item.bytesize + 1 # +1 is <NUL>
         }
         io.write(orig_table_data.pack('V*'))
 
         trans_table_data = Array.new()
         ary.each{|_, item|
-          trans_table_data.push(item.size)
+          trans_table_data.push(item.bytesize)
           trans_table_data.push(pos)
-          pos += item.size + 1 # +1 is <NUL>
+          pos += item.bytesize + 1 # +1 is <NUL>
         }
         io.write(trans_table_data.pack('V*'))
 
@@ -295,6 +291,39 @@ module GetPomo
 
       attr_accessor :little_endian, :path, :last_modified
       attr_reader :charset, :nplurals, :plural
+
+      private
+      if "".respond_to?(:encode)
+        def convert_encoding(string, original_string)
+          begin
+            string.encode(@output_charset, @charset)
+          rescue EncodingError
+            if $DEBUG
+              warn "@charset = ", @charset
+              warn "@output_charset = ", @output_charset
+              warn "msgid = ", original_string
+              warn "msgstr = ", string
+            end
+            string
+          end
+        end
+      else
+
+        require File.expand_path('iconv.rb', File.dirname(__FILE__))
+        def convert_encoding(string, original_string)
+          begin
+
+            str = GetPomo::Iconv.conv(@output_charset, @charset, string)
+          rescue GetPomo::Iconv::Failure
+            if $DEBUG
+              warn "@charset = ", @charset
+              warn "@output_charset = ", @output_charset
+              warn "msgid = ", original_string
+              warn "msgstr = ", str
+            end
+          end
+        end
+      end
     end
   end
 end

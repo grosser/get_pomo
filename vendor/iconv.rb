@@ -20,6 +20,7 @@
 
 begin
   require 'iconv'
+  GetPomo::Iconv = Iconv
 rescue LoadError
   # Provides Iconv.iconv which normally is provided through Ruby/GLib(1) functions.
   # This library is required for 'gettext'.
@@ -34,7 +35,7 @@ rescue LoadError
   # You can get binaries for Win32(One-Click Ruby Installer).
   # <URL: http://ruby-gnome2.sourceforge.jp/>
   module GetPomo
-    class Iconv2
+    class Iconv
       module Failure; end
       class InvalidEncoding < ArgumentError;  include Failure; end
       class IllegalSequence < ArgumentError;  include Failure; end
