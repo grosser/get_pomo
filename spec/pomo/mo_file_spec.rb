@@ -12,9 +12,9 @@ describe GetPomo::MoFile do
   end
 
   it "reads singulars" do
-    pending if RUBY_VERSION > "1.9.0"
+    pending("singular.mo is not encoded correctly for ruby > 1.9.0") if RUBY_VERSION > "1.9.0"
     t = GetPomo::MoFile.parse(File.read('spec/files/singular.mo'))[0]
-    t.to_hash.should == {:msgid=>'Back',:msgstr=>'Zurück'}
+    t.to_hash.should == {:msgid=>"Back",:msgstr=>"Zurück"}
   end
 
   it "reads plurals" do

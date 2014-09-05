@@ -33,7 +33,7 @@ module GetPomo
       default_options = {:parse_obsoletes => false}
       @options.merge!(default_options.merge(options))
       start_new_translation
-      text.gsub!(/^#{"\357\273\277"}/, "") #remove boom
+      text.sub!(/^#{"\357\273\277"}/, "") #remove bom (utf8 byte order mark)
       text.split(/$/).each_with_index do |line,index|
         @line_number = index + 1
         next if line.empty?
