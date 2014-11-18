@@ -1,8 +1,13 @@
 require 'get_pomo/po_file'
+
 module GetPomo
   autoload :VERSION, "get_pomo/version"
-  
+
   extend self
+
+  class GetPomo::Error < StandardError; end
+  class GetPomo::InvalidString < GetPomo::Error; end
+  class GetPomo::InvalidMethod < GetPomo::Error; end
 
   # A message is unique if the combination of msgid and msgctxt is unique.
   # An emtpy msgctxt does not mean the same thing as no msgctxt.
