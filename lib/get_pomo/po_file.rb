@@ -106,7 +106,6 @@ module GetPomo
     #msgid "hello" -> method call msgid + add string "hello"
     def parse_method_call(line)
       method, string = line.match(/^\s*([a-z0-9_\[\]]+)(.*)/)[1..2]
-      raise "no method found" unless method
       start_new_translation if %W(msgid msgctxt msgctxt).include? method and translation_complete?
       @last_method = method.to_sym
       add_string(string)
@@ -116,7 +115,7 @@ module GetPomo
     def add_string(string)
       string = string.strip
       return if string.empty?
-      raise "not string format: #{string.inspect} on line #{@line_number}" unless string =~ /^['"](.*)['"]$/
+      raise GetPomo::InvalidString, "Not a string format: #{string.inspect} on line #{@line_number}" unless string =~ /^['"](.*)['"]$/
       string_content = string[1..-2] #remove leading and trailing quotes from content
       @current_translation.add_text(string_content, :to=>@last_method)
     end

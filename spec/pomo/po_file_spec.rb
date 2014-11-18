@@ -133,13 +133,12 @@ describe GetPomo::PoFile do
     GetPomo::PoFile.parse(%Q(\n\n\n\n\n))
   end
 
+  it "raises when method is not found" do
+    expect{GetPomo::PoFile.parse(%Q(xxx "yyy"))}.to raise_error(GetPomo::InvalidMethod)
+  end
+
   it "shows line number for invalid strings" do
-    begin
-      GetPomo::PoFile.parse(%Q(\n\n\n\n\nmsgstr "))
-      flunk
-    rescue Exception => e
-      e.to_s.should =~ /line 5/
-    end
+    expect{GetPomo::PoFile.parse(%Q(\n\n\n\n\nmsgstr "))}.to raise_error(GetPomo::InvalidString)
   end
 
   describe :to_text do

@@ -12,10 +12,8 @@ module GetPomo
       elsif to.to_s =~ /^msgstr\[(\d)\]$/
         self.msgstr ||= []
         msgstr[$1.to_i] = msgstr[$1.to_i].to_s + text
-      elsif to.to_sym == :comment && text =~ OBSOLETE_REGEX
-        send("#{to}=",send(to).to_s+text)
       else
-        #simple form
+        raise GetPomo::InvalidMethod, "No method found for #{to}" unless self.respond_to?(to)
         send("#{to}=",send(to).to_s+text)
       end
     end
