@@ -48,6 +48,7 @@ Authors
 ### [Contributors](https://github.com/grosser/get_pomo/contributors)
  - [Dennis-Florian Herr](https://github.com/dfherr)
  - [Felipe Tanus](https://github.com/fotanus)
+ - [Laurent Dang](https://github.com/haeky)
 
 [Michael Grosser](http://grosser.it)<br/>
 michael@grosser.it<br/>
