@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    get_pomo (0.9.1)
+    get_pomo (0.9.2)
 
 GEM
   remote: https://rubygems.org/
