@@ -1,3 +1,11 @@
+This project is no longer maintained. 
+
+If you only need to handle PO files you might want to check out [PoParser](https://github.com/arashm/PoParser)
+
+If you only need the raw PO data parsed to a ruby hash check out PoParser's core [simple_po_parser](https://github.com/experteer/simple_po_parser)
+
+get_pomo
+===
 A simple and extendable .mo and .po file parser/generator.
 
 Advanteges over original [mo](http://github.com/mutoh/gettext/blob/abf96713327cc4c5d35f0a772f3b75ff4819450c/lib/gettext/mofile.rb) / [po](http://github.com/mutoh/gettext/blob/abf96713327cc4c5d35f0a772f3b75ff4819450c/lib/gettext/poparser.rb)-parser:
@@ -19,7 +27,8 @@ Setup
 =====
     sudo gem install get_pomo
 
-###Static interface
+### Static interface
+```
     #parse po files, first with obsolete messages second without
     translations = GetPomo::PoFile.parse(File.read('xxx.po'), :parse_obsoletes => true) + GetPomo::PoFile.parse(File.read('yyy.po'))
 
@@ -28,9 +37,9 @@ Setup
 
     #or write a new po file (unique by msgid, with merged references for non uniques)...
     File.open('xxx.po','w){|f|f.print(GetPomo::PoFile.to_text(translations, :merge => true))}
+```
 
-
-###Instance interface
+### Instance interface
     p = GetPomo::PoFile.new
     p.add_translations_from_text(File.read('...'))
     ...
