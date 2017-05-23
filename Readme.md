@@ -13,6 +13,8 @@ Advanteges over original [mo](http://github.com/mutoh/gettext/blob/abf96713327cc
  - easy mo-file handling/merging
  - po/mo file handling is identical, if you know one, you know both
 
+Alternative: [PoParser](https://github.com/arashm/PoParser)
+
 Setup
 =====
     sudo gem install get_pomo
