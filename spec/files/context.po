@@ -1,0 +1,9 @@
+# comment text
+msgctxt "Verb"
+msgid "Duplicate"
+msgstr "Duplicar"
+
+# Comment 2 text
+msgctxt "Noun"
+msgid "Duplicate"
+msgstr "Duplicado"
