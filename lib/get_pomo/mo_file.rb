@@ -4,6 +4,7 @@ require File.join(File.dirname(__FILE__),'..','..','vendor','mofile')
 module GetPomo
   class MoFile
     PLURAL_SEPARATOR = "\000"
+    CONTEXT_SEPARATOR = "\u0004"
 
     def self.parse(text)
       MoFile.new.add_translations_from_text(text)
@@ -24,6 +25,11 @@ module GetPomo
       text = StringIO.new(text)
       @translations += GetPomo::GetText::MOFile.open(text, "UTF-8").map do |msgid,msgstr|
         translation = Translation.new
+
+        if has_context? msgid
+          translation.msgctxt, msgid = msgid.split CONTEXT_SEPARATOR
+        end
+
         if plural? msgid or plural? msgstr
           translation.msgid = split_plural(msgid)
           translation.msgstr = split_plural(msgstr)
@@ -37,7 +43,10 @@ module GetPomo
 
     def to_text
       m = GetPomo::GetText::MOFile.new
-      GetPomo.unique_translations(translations).each {|t| m[plural_to_string(t.msgid)] = plural_to_string(t.msgstr)}
+      GetPomo.unique_translations(translations).each do |t| 
+        key = [t.msgctxt, plural_to_string(t.msgid)].compact * CONTEXT_SEPARATOR
+        m[key] = plural_to_string(t.msgstr)
+      end
 
       io = StringIO.new
       m.save_to_stream io
@@ -49,6 +58,10 @@ module GetPomo
 
     def plural_to_string(plural_or_singular)
       [*plural_or_singular] * PLURAL_SEPARATOR
+    end
+
+    def has_context? string
+      string.include? CONTEXT_SEPARATOR
     end
 
     def plural? string
