@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    get_pomo (0.9.2)
+    get_pomo (1.0.0)
 
 GEM
   remote: https://rubygems.org/
@@ -26,3 +26,6 @@ DEPENDENCIES
   get_pomo!
   rake
   rspec (~> 2)
+
+BUNDLED WITH
+   1.15.3
