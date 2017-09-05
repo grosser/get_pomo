@@ -22,6 +22,22 @@ describe GetPomo::MoFile do
     t.to_hash.should == {:msgid=>['Axis','Axis'],:msgstr=>['Achse','Achsen']}
   end
 
+  it 'reads contexts' do
+    t = GetPomo::MoFile.parse(File.read('spec/files/context.mo'))
+
+    t[1].to_hash.should == {
+      :msgid=>'Duplicate',
+      :msgstr=>'Duplicado',
+      :msgctxt=>'Noun',
+    }
+
+    t[2].to_hash.should == {
+      :msgid=>'Duplicate',
+      :msgstr=>'Duplicar',
+      :msgctxt=>'Verb',
+    }
+  end
+
   describe 'instance methods' do
     it "combines multiple translations" do
       m = GetPomo::MoFile.new
@@ -54,6 +70,24 @@ describe GetPomo::MoFile do
     it "writes singulars" do
       text = File.read('spec/files/singular.mo')
       GetPomo::MoFile.to_text(GetPomo::MoFile.parse(text)).should == text
+    end
+
+    it 'writes msgctxt' do
+      translations = GetPomo::PoFile.parse(File.read('spec/files/context.po'))
+      stream = GetPomo::MoFile.to_text(translations)
+
+      result = GetPomo::MoFile.parse(stream)
+      result[0].to_hash.should == {
+        :msgid=>'Duplicate',
+        :msgstr=>'Duplicado',
+        :msgctxt=>'Noun',
+      }
+
+      result[1].to_hash.should == {
+        :msgid=>'Duplicate',
+        :msgstr=>'Duplicar',
+        :msgctxt=>'Verb',
+      }
     end
   end
 end
