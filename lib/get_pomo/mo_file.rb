@@ -27,7 +27,7 @@ module GetPomo
         translation = Translation.new
 
         if has_context? msgid
-          translation.msgctxt, msgid = msgid.split CONTEXT_SEPARATOR
+          translation.msgctxt, msgid = msgid.split CONTEXT_SEPARATOR, 2
         end
 
         if plural? msgid or plural? msgstr
