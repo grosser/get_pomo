@@ -26,7 +26,7 @@ module GetPomo
       @translations += GetPomo::GetText::MOFile.open(text, "UTF-8").map do |msgid,msgstr|
         translation = Translation.new
 
-        if has_context? msgid
+        if msgid.include? CONTEXT_SEPARATOR
           translation.msgctxt, msgid = msgid.split CONTEXT_SEPARATOR, 2
         end
 
@@ -37,14 +37,18 @@ module GetPomo
           translation.msgid = msgid
           translation.msgstr = msgstr
         end
+
         translation
       end
     end
 
     def to_text
       m = GetPomo::GetText::MOFile.new
-      GetPomo.unique_translations(translations).each do |t| 
-        key = [t.msgctxt, plural_to_string(t.msgid)].compact * CONTEXT_SEPARATOR
+      GetPomo.unique_translations(translations).each do |t|
+        key = plural_to_string(t.msgid)
+        if msgctxt = t.msgctxt
+          key = "#{msgctxt}#{CONTEXT_SEPARATOR}#{key}"
+        end
         m[key] = plural_to_string(t.msgstr)
       end
 
@@ -58,10 +62,6 @@ module GetPomo
 
     def plural_to_string(plural_or_singular)
       [*plural_or_singular] * PLURAL_SEPARATOR
-    end
-
-    def has_context? string
-      string.include? CONTEXT_SEPARATOR
     end
 
     def plural? string
