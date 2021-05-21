@@ -58,7 +58,7 @@ module GetPomo
       default_options = {:merge => false}
       @options.merge!(default_options.merge(options))
       GetPomo.unique_translations(translations, options[:merge]).map do |translation|
-        comment = translation.comment.to_s.split(/\n|\r\n/).map{|line|"##{line}\n"}*''
+        comment = translation.comment.to_s.split(/\n|\r\n/).map{|line|"#{line}\n"}*''
 
         msgctxt = if translation.msgctxt
           %Q(msgctxt "#{translation.msgctxt}"\n)
